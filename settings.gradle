@@ -1,0 +1,3 @@
+include ':whygoogle'
+include ':app'
+rootProject.name = "WhyGoogle"
