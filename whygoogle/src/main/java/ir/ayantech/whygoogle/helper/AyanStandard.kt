@@ -11,17 +11,17 @@ fun trying(block: () -> Unit) {
     }
 }
 
-fun delayed(delay: Long = 500L, block: () -> Unit) {
-    Looper.getMainLooper()?.let {
-        Handler(it).postDelayed({
-            trying {
-                block()
-            }
-        }, delay)
-    }
+fun delayed(delay: Long = 500L, block: () -> Unit): Handler {
+    val handler = Handler(Looper.getMainLooper())
+    handler.postDelayed({
+        trying {
+            block()
+        }
+    }, delay)
+    return handler
 }
 
-fun repeatTryingUntil(condition: () -> Boolean, block: () -> Unit) {
+fun repeatTryingUntil(condition: () -> Boolean, block: () -> Unit): Handler {
     val handler = Handler(Looper.getMainLooper())
     val runnable = object : Runnable {
         override fun run() {
@@ -36,6 +36,7 @@ fun repeatTryingUntil(condition: () -> Boolean, block: () -> Unit) {
         }
     }
     handler.postDelayed(runnable, 100)
+    return handler
 }
 
 fun repeatEvery(milliSeconds: Long, block: () -> Unit) {

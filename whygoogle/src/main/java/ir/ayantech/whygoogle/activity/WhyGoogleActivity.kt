@@ -70,8 +70,12 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
     }
 
     fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
-        while (getTopFragment().javaClass.name != target.name) pop()
+        popTo(target)
         start(fragment)
+    }
+
+    fun <P> popTo(target: Class<P>) {
+        while (getTopFragment().javaClass.name != target.name) pop()
     }
 
     fun pop() {

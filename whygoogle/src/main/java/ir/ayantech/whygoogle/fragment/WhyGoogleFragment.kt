@@ -109,6 +109,10 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         (activity as? WhyGoogleActivity<*>)?.pop()
     }
 
+    fun <P> popTo(target: Class<P>) {
+        (activity as? WhyGoogleActivity<*>)?.popTo(target)
+    }
+
     fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true) {
         (activity as? WhyGoogleActivity<*>)?.start(fragment, popAll, stack)
     }
