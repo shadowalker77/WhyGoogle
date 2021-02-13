@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 
 fun RecyclerView.verticalSetup(callBack: SimpleCallBack? = null) {
@@ -37,6 +38,26 @@ fun RecyclerView.rtlSetup(itemCount: Int = 1, callBack: SimpleCallBack? = null) 
                 }
             }
         }
+}
+
+fun RecyclerView.staggeredSetup(itemCount: Int, orientation: Int, callBack: SimpleCallBack? = null) {
+    layoutManager = object : StaggeredGridLayoutManager(itemCount, orientation) {
+        override fun onLayoutChildren(
+            recycler: RecyclerView.Recycler?,
+            state: RecyclerView.State?
+        ) {
+            super.onLayoutChildren(recycler, state)
+            callBack?.invoke()
+        }
+    }
+}
+
+fun RecyclerView.verticalStaggeredSetup(itemCount: Int, callBack: SimpleCallBack? = null) {
+    staggeredSetup(itemCount, RecyclerView.VERTICAL, callBack)
+}
+
+fun RecyclerView.horizontalStaggeredSetup(itemCount: Int, callBack: SimpleCallBack? = null) {
+    staggeredSetup(itemCount, RecyclerView.HORIZONTAL, callBack)
 }
 
 fun RecyclerView.ltrSetup(itemCount: Int = 1) {
