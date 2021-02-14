@@ -20,7 +20,10 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
 
     var lastExpandedPosition = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<T, RowLayout> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): CommonViewHolder<T, RowLayout> {
         return super.onCreateViewHolder(parent, viewType).also { holder ->
             holder.registerClickListener(
                 if (expandViewHandlerId() != null)
@@ -44,6 +47,7 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
     }
 
     override fun onBindViewHolder(holder: CommonViewHolder<T, RowLayout>, position: Int) {
+        super.onBindViewHolder(holder, position)
         changeExpandAndCollapseStatus(holder, position == lastExpandedPosition)
     }
 
