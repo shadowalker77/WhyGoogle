@@ -49,7 +49,8 @@ abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding, BackLayout : Vie
                 wholeView.backgroundRl,
                 false
             )
-
+        wholeView.backgroundRl.addView(backView.root)
+        wholeView.foregroundRl.addView(rowView.root)
         return SwipeAbleViewHolder(
             wholeView,
             rowView,
