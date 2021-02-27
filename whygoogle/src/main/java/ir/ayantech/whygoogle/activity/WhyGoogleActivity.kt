@@ -30,7 +30,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
     fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true) {
         if (!stack) {
             try {
-                if (getTopFragment().javaClass.simpleName == fragment.javaClass.simpleName)
+                if (getTopFragment()?.javaClass?.simpleName == fragment.javaClass.simpleName)
                     return
             } catch (e: Exception) {
             }
@@ -75,34 +75,30 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
     }
 
     fun <P> popTo(target: Class<P>) {
-        while (getTopFragment().javaClass.name != target.name) pop()
+        while (getTopFragment()?.javaClass?.name != target.name) pop()
     }
 
     fun pop() {
         supportFragmentManager.popBackStackImmediate()
-        onTopFragmentChanged(getTopFragment())
+        getTopFragment()?.let { onTopFragmentChanged(it) }
     }
 
     fun popAll() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        onTopFragmentChanged(getTopFragment())
+        getTopFragment()?.let { onTopFragmentChanged(it) }
     }
 
     open fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
     }
 
     fun getTopFragment() =
-        supportFragmentManager.findFragmentById(containerId) as WhyGoogleFragment<*>
+        supportFragmentManager.findFragmentById(containerId) as? WhyGoogleFragment<*>?
 
     fun getFragmentCount() = supportFragmentManager.backStackEntryCount
 
     override fun onBackPressed() {
-        if (getTopFragment().onBackPressed())
+        if (getTopFragment()?.onBackPressed() == true)
             return
-        if (getFragmentCount() == 1) {
-            finish()
-            return
-        } else
-            super.onBackPressed()
+        super.onBackPressed()
     }
 }
