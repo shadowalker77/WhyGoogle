@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import ir.ayantech.pishkhan24.helper.changeVisibility
 import kotlin.random.Random
 
 typealias OnItemClickListener<T> = (item: T?, viewId: Int, position: Int) -> Unit

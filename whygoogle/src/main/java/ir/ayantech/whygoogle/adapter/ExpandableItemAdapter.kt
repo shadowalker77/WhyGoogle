@@ -3,12 +3,13 @@ package ir.ayantech.whygoogle.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import ir.ayantech.pishkhan24.helper.changeVisibility
-import ir.ayantech.pishkhan24.helper.delayedTransition
+import ir.ayantech.whygoogle.R
+import ir.ayantech.whygoogle.helper.changeVisibility
+import ir.ayantech.whygoogle.helper.delayedTransition
 
 abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
     items: List<T>,
-    private val canCollapseAll: Boolean = true,
+    private var canCollapseAll: Boolean = true,
     onItemClickListener: OnItemClickListener<T>?
 ) :
     CommonAdapter<T, RowLayout>(items, onItemClickListener) {
@@ -55,6 +56,11 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
         holder: CommonViewHolder<T, RowLayout>,
         status: Boolean
     ) {
+        holder.rowViewBinding.root.translationX = if (status)
+            holder.itemView.context.resources.getDimensionPixelSize(R.dimen.expand_margin)
+                .toFloat() * -1
+        else
+            0f
         holder.itemView.findViewById<View>(getExpandedLayoutId()).changeVisibility(status)
     }
 

@@ -1,7 +1,5 @@
 package ir.ayantech.whygoogle.adapter
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -10,7 +8,7 @@ import ir.ayantech.whygoogle.databinding.RowCommonViewHolderBinding
 abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding, BackLayout : ViewBinding>(
     items: List<T>,
     onItemClickListener: OnItemClickListener<T>? = null
-) : BaseAdapter<T, SwipeAbleViewHolder<T, RowLayout, BackLayout>>(
+) : ExpandableItemAdapter<T, RowLayout>(
     items,
     onItemClickListener
 ),
@@ -25,38 +23,6 @@ abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding, BackLayout : Vie
                 this
             )
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(parentRv)
-    }
-
-    abstract val rowLayoutBindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> RowLayout
-
-    abstract val backLayoutBindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> BackLayout
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): SwipeAbleViewHolder<T, RowLayout, BackLayout> {
-        val wholeView =
-            RowCommonViewHolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val rowView =
-            rowLayoutBindingInflater.invoke(
-                LayoutInflater.from(parent.context),
-                wholeView.foregroundRl,
-                false
-            )
-        val backView =
-            backLayoutBindingInflater.invoke(
-                LayoutInflater.from(parent.context),
-                wholeView.backgroundRl,
-                false
-            )
-        wholeView.backgroundRl.addView(backView.root)
-        wholeView.foregroundRl.addView(rowView.root)
-        return SwipeAbleViewHolder(
-            wholeView,
-            rowView,
-            backView,
-            onItemClickListener
-        )
     }
 
     override fun onSwiped(
