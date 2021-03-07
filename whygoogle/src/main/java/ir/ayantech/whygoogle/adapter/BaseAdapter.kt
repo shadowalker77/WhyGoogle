@@ -57,8 +57,6 @@ open class BaseViewHolder<T>(
     private val onItemClickListener: OnItemClickListener<T>?
 ) : RecyclerView.ViewHolder(viewBinding.root), View.OnClickListener {
 
-    open val mainView = viewBinding
-
     var item: T? = null
 
     var rotate: ObjectAnimator? = null

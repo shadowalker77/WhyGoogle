@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.databinding.RowCommonViewHolderBinding
 
-abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding, BackLayout : ViewBinding>(
+abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding>(
     items: List<T>,
     onItemClickListener: OnItemClickListener<T>? = null
 ) : ExpandableItemAdapter<T, RowLayout>(
@@ -35,10 +35,3 @@ abstract class SwipeableItemAdapter<T, RowLayout : ViewBinding, BackLayout : Vie
 
     open fun swiped(item: T, position: Int) {}
 }
-
-class SwipeAbleViewHolder<T, RowLayout : ViewBinding, BackLayout : ViewBinding>(
-    wholeView: RowCommonViewHolderBinding,
-    val rowViewBinding: RowLayout,
-    val backViewBinding: BackLayout,
-    onItemClickListener: OnItemClickListener<T>?
-) : BaseViewHolder<T>(wholeView, onItemClickListener)

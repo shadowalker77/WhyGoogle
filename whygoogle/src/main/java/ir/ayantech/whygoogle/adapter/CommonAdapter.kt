@@ -53,8 +53,8 @@ open class CommonViewHolder<T, RowLayout : ViewBinding>(
         onItemClickListener: OnItemClickListener<T>?
     ) : this(wholeView, rowViewBinding, null, onItemClickListener)
 
-    override val mainView: RowLayout
-        get() = super.mainView as RowLayout
+    val mainView: RowLayout
+        get() = rowViewBinding
 
     fun accessViews(block: RowLayout.() -> Unit) {
         mainView.apply {
