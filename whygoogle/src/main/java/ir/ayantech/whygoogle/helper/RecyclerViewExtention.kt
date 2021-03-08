@@ -1,12 +1,11 @@
 package ir.ayantech.whygoogle.helper
 
 import android.content.Context
+import android.graphics.drawable.InsetDrawable
 import android.util.AttributeSet
 import android.util.Log
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.*
+import ir.ayantech.whygoogle.R
 
 
 fun RecyclerView.verticalSetup(callBack: SimpleCallBack? = null) {
@@ -21,7 +20,6 @@ fun RecyclerView.verticalSetup(callBack: SimpleCallBack? = null) {
             }
         }
     }
-//    layoutManager = GridLayoutManager(context, itemCount, RecyclerView.VERTICAL, false)
 }
 
 fun RecyclerView.rtlSetup(itemCount: Int = 1, callBack: SimpleCallBack? = null) {
@@ -40,7 +38,11 @@ fun RecyclerView.rtlSetup(itemCount: Int = 1, callBack: SimpleCallBack? = null) 
         }
 }
 
-fun RecyclerView.staggeredSetup(itemCount: Int, orientation: Int, callBack: SimpleCallBack? = null) {
+fun RecyclerView.staggeredSetup(
+    itemCount: Int,
+    orientation: Int,
+    callBack: SimpleCallBack? = null
+) {
     layoutManager = object : StaggeredGridLayoutManager(itemCount, orientation) {
         override fun onLayoutChildren(
             recycler: RecyclerView.Recycler?,
@@ -98,4 +100,16 @@ fun RecyclerView.scrollListener(callBack: BooleanCallBack) {
                 callBack(true)
         }
     })
+}
+
+fun RecyclerView.addDivider(marginSize: Int? = null) {
+    val ATTRS = intArrayOf(android.R.attr.listDivider)
+    val a = context.obtainStyledAttributes(ATTRS)
+    val divider = a.getDrawable(0)
+    val inset = resources.getDimensionPixelSize(marginSize ?: R.dimen.default_divider_margin)
+    val insetDivider = InsetDrawable(divider, inset, 0, inset, 0)
+    a.recycle()
+    val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+    itemDecoration.setDrawable(insetDivider)
+    this.addItemDecoration(itemDecoration)
 }
