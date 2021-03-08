@@ -2,6 +2,7 @@ package ir.ayantech.whygoogle.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.R
 import ir.ayantech.whygoogle.helper.changeVisibility
@@ -26,6 +27,12 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
         viewType: Int
     ): CommonViewHolder<T, RowLayout> {
         return super.onCreateViewHolder(parent, viewType).also { holder ->
+            holder.wholeView.backgroundRl.setBackgroundColor(
+                ContextCompat.getColor(
+                    parent.context,
+                    R.color.back_expand
+                )
+            )
             holder.registerClickListener(
                 if (expandViewHandlerId() != null)
                     holder.itemView.findViewById(expandViewHandlerId()!!)

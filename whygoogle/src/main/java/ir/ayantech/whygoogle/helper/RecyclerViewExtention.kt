@@ -1,9 +1,9 @@
 package ir.ayantech.whygoogle.helper
 
 import android.content.Context
-import android.graphics.drawable.InsetDrawable
 import android.util.AttributeSet
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import ir.ayantech.whygoogle.R
 
@@ -102,14 +102,8 @@ fun RecyclerView.scrollListener(callBack: BooleanCallBack) {
     })
 }
 
-fun RecyclerView.addDivider(marginSize: Int? = null) {
-    val ATTRS = intArrayOf(android.R.attr.listDivider)
-    val a = context.obtainStyledAttributes(ATTRS)
-    val divider = a.getDrawable(0)
-    val inset = resources.getDimensionPixelSize(marginSize ?: R.dimen.default_divider_margin)
-    val insetDivider = InsetDrawable(divider, inset, 0, inset, 0)
-    a.recycle()
-    val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-    itemDecoration.setDrawable(insetDivider)
-    this.addItemDecoration(itemDecoration)
+fun RecyclerView.addDivider(resource: Int? = null) {
+    val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+    itemDecorator.setDrawable(ContextCompat.getDrawable(context, resource ?: R.drawable.default_divider)!!)
+    this.addItemDecoration(itemDecorator)
 }

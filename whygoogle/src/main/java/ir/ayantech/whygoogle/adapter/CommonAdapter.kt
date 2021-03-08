@@ -41,7 +41,7 @@ abstract class CommonAdapter<T, RowLayout : ViewBinding>(
 }
 
 open class CommonViewHolder<T, RowLayout : ViewBinding>(
-    wholeView: RowCommonViewHolderBinding,
+    val wholeView: RowCommonViewHolderBinding,
     val rowViewBinding: RowLayout,
     val backViewBinding: ViewBinding?,
     onItemClickListener: OnItemClickListener<T>?
