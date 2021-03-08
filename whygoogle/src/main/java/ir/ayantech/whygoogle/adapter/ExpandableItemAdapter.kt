@@ -22,17 +22,20 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
 
     var lastExpandedPosition = 0
 
+    open val hasRightIndicator = true
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): CommonViewHolder<T, RowLayout> {
         return super.onCreateViewHolder(parent, viewType).also { holder ->
-            holder.wholeView.backgroundRl.setBackgroundColor(
-                ContextCompat.getColor(
-                    parent.context,
-                    R.color.back_expand
+            if (hasRightIndicator)
+                holder.wholeView.backgroundRl.setBackgroundColor(
+                    ContextCompat.getColor(
+                        parent.context,
+                        R.color.back_expand
+                    )
                 )
-            )
             holder.registerClickListener(
                 if (expandViewHandlerId() != null)
                     holder.itemView.findViewById(expandViewHandlerId()!!)
@@ -63,11 +66,11 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
         holder: CommonViewHolder<T, RowLayout>,
         status: Boolean
     ) {
-        holder.rowViewBinding.root.translationX = if (status)
-            holder.itemView.context.resources.getDimensionPixelSize(R.dimen.expand_margin)
-                .toFloat() * -1
-        else
-            0f
+        if (hasRightIndicator)
+            holder.rowViewBinding.root.translationX =
+                if (status) holder.itemView.context.resources.getDimensionPixelSize(R.dimen.expand_margin)
+                    .toFloat() * -1
+                else 0f
         holder.itemView.findViewById<View>(getExpandedLayoutId()).changeVisibility(status)
     }
 
