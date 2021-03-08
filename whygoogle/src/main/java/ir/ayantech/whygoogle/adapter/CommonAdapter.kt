@@ -19,29 +19,42 @@ abstract class CommonAdapter<T, RowLayout : ViewBinding>(
         parent: ViewGroup,
         viewType: Int
     ): CommonViewHolder<T, RowLayout> {
-        val wholeView =
-            RowCommonViewHolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val rowView =
-            bindingInflater.invoke(
+        if (backLayoutBindingInflater != null) {
+            val wholeView =
+                RowCommonViewHolderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            val rowView =
+                bindingInflater.invoke(
+                    LayoutInflater.from(parent.context),
+                    wholeView.foregroundRl,
+                    false
+                )
+            val backView =
+                backLayoutBindingInflater?.invoke(
+                    LayoutInflater.from(parent.context),
+                    wholeView.backgroundRl,
+                    false
+                )
+            if (backView != null)
+                wholeView.backgroundRl.addView(backView.root)
+            wholeView.foregroundRl.addView(rowView.root)
+            return CommonViewHolder(wholeView, rowView, backView, onItemClickListener)
+        } else {
+            val finalInflate = bindingInflater.invoke(
                 LayoutInflater.from(parent.context),
-                wholeView.foregroundRl,
+                parent,
                 false
             )
-        val backView =
-            backLayoutBindingInflater?.invoke(
-                LayoutInflater.from(parent.context),
-                wholeView.backgroundRl,
-                false
-            )
-        if (backView != null)
-            wholeView.backgroundRl.addView(backView.root)
-        wholeView.foregroundRl.addView(rowView.root)
-        return CommonViewHolder(wholeView, rowView, backView, onItemClickListener)
+            return CommonViewHolder(finalInflate, finalInflate, null, onItemClickListener)
+        }
     }
 }
 
 open class CommonViewHolder<T, RowLayout : ViewBinding>(
-    val wholeView: RowCommonViewHolderBinding,
+    val wholeView: ViewBinding,
     val rowViewBinding: RowLayout,
     val backViewBinding: ViewBinding?,
     onItemClickListener: OnItemClickListener<T>?

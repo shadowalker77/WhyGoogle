@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.R
+import ir.ayantech.whygoogle.databinding.RowCommonViewHolderBinding
 import ir.ayantech.whygoogle.helper.changeVisibility
 import ir.ayantech.whygoogle.helper.delayedTransition
 
@@ -30,7 +31,7 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
     ): CommonViewHolder<T, RowLayout> {
         return super.onCreateViewHolder(parent, viewType).also { holder ->
             if (hasRightIndicator)
-                holder.wholeView.backgroundRl.setBackgroundColor(
+                (holder.wholeView as? RowCommonViewHolderBinding)?.backgroundRl?.setBackgroundColor(
                     ContextCompat.getColor(
                         parent.context,
                         R.color.back_expand
