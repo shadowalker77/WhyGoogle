@@ -66,6 +66,10 @@ fun RecyclerView.ltrSetup(itemCount: Int = 1) {
     layoutManager = GridLayoutManager(context, itemCount, RecyclerView.VERTICAL, false)
 }
 
+fun RecyclerView.horizontalSetup(itemCount: Int = 1) {
+    layoutManager = GridLayoutManager(context, itemCount, RecyclerView.HORIZONTAL, false)
+}
+
 fun RecyclerView.horizontalRtlSetup(itemCount: Int = 1) {
     layoutManager = RtlGridLayoutManager(context, itemCount, RecyclerView.HORIZONTAL, false)
 }
@@ -104,6 +108,11 @@ fun RecyclerView.scrollListener(callBack: BooleanCallBack) {
 
 fun RecyclerView.addDivider(resource: Int? = null) {
     val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-    itemDecorator.setDrawable(ContextCompat.getDrawable(context, resource ?: R.drawable.default_divider)!!)
+    itemDecorator.setDrawable(
+        ContextCompat.getDrawable(
+            context,
+            resource ?: R.drawable.default_divider
+        )!!
+    )
     this.addItemDecoration(itemDecorator)
 }

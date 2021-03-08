@@ -15,11 +15,13 @@ abstract class CommonAdapter<T, RowLayout : ViewBinding>(
 
     open val backLayoutBindingInflater: ViewBindingInflater? = null
 
+    open val createBackground: Boolean = false
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): CommonViewHolder<T, RowLayout> {
-        if (backLayoutBindingInflater != null) {
+        if (backLayoutBindingInflater != null || createBackground) {
             val wholeView =
                 RowCommonViewHolderBinding.inflate(
                     LayoutInflater.from(parent.context),

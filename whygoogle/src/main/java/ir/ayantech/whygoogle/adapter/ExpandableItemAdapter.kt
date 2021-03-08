@@ -25,6 +25,9 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
 
     open val hasRightIndicator = true
 
+    override val createBackground: Boolean
+        get() = true
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
