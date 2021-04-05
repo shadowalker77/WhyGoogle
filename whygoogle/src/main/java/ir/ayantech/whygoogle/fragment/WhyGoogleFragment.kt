@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.activity.WhyGoogleActivity
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
+import ir.ayantech.whygoogle.helper.trying
 
 typealias ViewBindingInflater = (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding
 
@@ -45,13 +46,19 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                 onFragmentVisible()
             }
         _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
-        mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+        trying {
+            mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+        }
 //        _binding!!.mainRl.addView(mainBinding.root)
         headerInflater?.let {
-            headerBinding = it.invoke(inflater, _binding!!.headerRl, true)
+            trying {
+                headerBinding = it.invoke(inflater, _binding!!.headerRl, true)
+            }
         }
         footerInflater?.let {
-            footerBinding = it.invoke(inflater, _binding!!.footerRl, true)
+            trying {
+                footerBinding = it.invoke(inflater, _binding!!.footerRl, true)
+            }
         }
         _binding?.root?.let { preShowProcess(it) }
         return requireNotNull(_binding).root.also {
