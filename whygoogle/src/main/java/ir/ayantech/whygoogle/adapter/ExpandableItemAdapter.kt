@@ -75,7 +75,7 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
                 if (status) holder.itemView.context.resources.getDimensionPixelSize(R.dimen.expand_margin)
                     .toFloat() * -1
                 else 0f
-        holder.itemView.findViewById<View>(getExpandedLayoutId()).changeVisibility(status)
+        holder.itemView.findViewById<View>(getExpandedLayoutId())?.changeVisibility(status)
     }
 
     abstract fun getExpandedLayoutId(): Int
