@@ -64,6 +64,16 @@ fun String.unify() =
         .replace('۷', '7')
         .replace('۸', '8')
         .replace('۹', '9')
+        .replace('٠', '0')
+        .replace('١', '1')
+        .replace('٢', '2')
+        .replace('٣', '3')
+        .replace('٤', '4')
+        .replace('٥', '5')
+        .replace('٦', '6')
+        .replace('٧', '7')
+        .replace('٨', '8')
+        .replace('٩', '9')
 
 fun String.toPersianNumber() =
     this.replace('0', '۰')
@@ -76,6 +86,16 @@ fun String.toPersianNumber() =
         .replace('7', '۷')
         .replace('8', '۸')
         .replace('9', '۹')
+        .replace('٠', '۰')
+        .replace('١', '۱')
+        .replace('٢', '۲')
+        .replace('٣', '۳')
+        .replace('٤', '۴')
+        .replace('٥', '۵')
+        .replace('٦', '۶')
+        .replace('٧', '۷')
+        .replace('٨', '۸')
+        .replace('٩', '۹')
 
 fun String.urlDecode(): String {
     return URLDecoder.decode(this, "UTF-8")
