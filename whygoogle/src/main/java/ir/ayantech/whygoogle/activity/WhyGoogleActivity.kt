@@ -57,10 +57,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
         containerId: Int,
         fragment: WhyGoogleFragment<*>
     ): FragmentTransaction {
-//        if (getFragmentCount() == 0)
         this.replace(containerId, fragment)
-//        else
-//            this.add(containerId, fragment)
         return this
     }
 
@@ -78,7 +75,9 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
         while (getTopFragment()?.javaClass?.name != target.name) pop()
     }
 
-    fun pop() {
+    fun pop(from: WhyGoogleFragment<*>? = null) {
+        if (from != null && getTopFragment()?.javaClass?.simpleName != from.javaClass.simpleName)
+            return
         supportFragmentManager.popBackStackImmediate()
         getTopFragment()?.let { onTopFragmentChanged(it) }
     }

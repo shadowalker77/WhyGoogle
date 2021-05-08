@@ -113,7 +113,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
     }
 
     fun pop() {
-        (activity as? WhyGoogleActivity<*>)?.pop()
+        (activity as? WhyGoogleActivity<*>)?.pop(this)
     }
 
     fun <P> popTo(target: Class<P>) {
@@ -125,8 +125,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
     }
 
     fun startWithPop(fragment: WhyGoogleFragment<*>) {
-        (activity as? WhyGoogleActivity<*>)?.pop()
-        (activity as? WhyGoogleActivity<*>)?.start(fragment)
+        (activity as? WhyGoogleActivity<*>)?.startWithPop(fragment)
     }
 
     fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
