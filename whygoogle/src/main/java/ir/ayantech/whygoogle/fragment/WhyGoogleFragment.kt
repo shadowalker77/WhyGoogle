@@ -112,6 +112,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                     })
                 }
             } catch (e: Exception) {
+                unLockUI()
                 null
             }
         }
