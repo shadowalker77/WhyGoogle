@@ -1,5 +1,6 @@
 package ir.ayantech.whygoogle.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,8 @@ import ir.ayantech.whygoogle.helper.trying
 typealias ViewBindingInflater = (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding
 
 abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
+
+    private var _isUILocked = false
 
     private var _binding: WhyGoogleFragmentContainerBinding? = null
 
@@ -36,6 +39,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     open val recreateOnReturn: Boolean = false
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,10 +65,21 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
             }
         }
         _binding?.root?.let { preShowProcess(it) }
+        _binding?.dummyToLock?.setOnTouchListener { v, event ->
+            _isUILocked
+        }
         return requireNotNull(_binding).root.also {
             onCreate()
             onFragmentVisible()
         }
+    }
+
+    fun lockUI() {
+        _isUILocked = true
+    }
+
+    fun unLockUI() {
+        _isUILocked = false
     }
 
     open fun onFragmentVisible() {
@@ -84,10 +99,14 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
             try {
                 AnimationUtils.loadAnimation(it, nextAnim).also {
                     it.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation?) {}
+                        override fun onAnimationStart(animation: Animation?) {
+                            lockUI()
+                        }
+
                         override fun onAnimationRepeat(animation: Animation?) {}
 
                         override fun onAnimationEnd(animation: Animation?) {
+                            unLockUI()
                             onEnterAnimationEnded()
                         }
                     })
