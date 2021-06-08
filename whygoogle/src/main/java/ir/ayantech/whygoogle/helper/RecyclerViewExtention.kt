@@ -7,8 +7,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import ir.ayantech.whygoogle.R
 
+private fun RecyclerView.basicSetup() {
+    this.isMotionEventSplittingEnabled = false
+}
 
 fun RecyclerView.verticalSetup(callBack: SimpleCallBack? = null) {
+    this.basicSetup()
     layoutManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
         override fun onLayoutChildren(
             recycler: RecyclerView.Recycler?,
@@ -23,6 +27,7 @@ fun RecyclerView.verticalSetup(callBack: SimpleCallBack? = null) {
 }
 
 fun RecyclerView.rtlSetup(itemCount: Int = 1, callBack: SimpleCallBack? = null) {
+    this.basicSetup()
     layoutManager =
         object : RtlGridLayoutManager(context, itemCount, RecyclerView.VERTICAL, false) {
             override fun onLayoutChildren(
@@ -43,6 +48,7 @@ fun RecyclerView.staggeredSetup(
     orientation: Int,
     callBack: SimpleCallBack? = null
 ) {
+    this.basicSetup()
     layoutManager = object : StaggeredGridLayoutManager(itemCount, orientation) {
         override fun onLayoutChildren(
             recycler: RecyclerView.Recycler?,
@@ -55,22 +61,27 @@ fun RecyclerView.staggeredSetup(
 }
 
 fun RecyclerView.verticalStaggeredSetup(itemCount: Int, callBack: SimpleCallBack? = null) {
+    this.basicSetup()
     staggeredSetup(itemCount, RecyclerView.VERTICAL, callBack)
 }
 
 fun RecyclerView.horizontalStaggeredSetup(itemCount: Int, callBack: SimpleCallBack? = null) {
+    this.basicSetup()
     staggeredSetup(itemCount, RecyclerView.HORIZONTAL, callBack)
 }
 
 fun RecyclerView.ltrSetup(itemCount: Int = 1) {
+    this.basicSetup()
     layoutManager = GridLayoutManager(context, itemCount, RecyclerView.VERTICAL, false)
 }
 
 fun RecyclerView.horizontalSetup(itemCount: Int = 1) {
+    this.basicSetup()
     layoutManager = GridLayoutManager(context, itemCount, RecyclerView.HORIZONTAL, false)
 }
 
 fun RecyclerView.horizontalRtlSetup(itemCount: Int = 1) {
+    this.basicSetup()
     layoutManager = RtlGridLayoutManager(context, itemCount, RecyclerView.HORIZONTAL, false)
 }
 
