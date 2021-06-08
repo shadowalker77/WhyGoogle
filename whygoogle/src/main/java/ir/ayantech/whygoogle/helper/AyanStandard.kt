@@ -39,7 +39,7 @@ fun repeatTryingUntil(condition: () -> Boolean, block: () -> Unit): Handler {
     return handler
 }
 
-fun repeatEvery(milliSeconds: Long, block: () -> Unit) {
+fun repeatEvery(milliSeconds: Long, block: () -> Unit): Handler {
     val handler = Handler(Looper.getMainLooper())
     val runnable = object : Runnable {
         override fun run() {
@@ -52,6 +52,7 @@ fun repeatEvery(milliSeconds: Long, block: () -> Unit) {
         }
     }
     handler.postDelayed(runnable, milliSeconds)
+    return handler
 }
 
 typealias SimpleCallBack = () -> Unit
