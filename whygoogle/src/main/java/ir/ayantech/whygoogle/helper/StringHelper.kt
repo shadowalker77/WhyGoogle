@@ -111,6 +111,9 @@ fun String.base64ToBitmap(): Bitmap =
     )
 
 fun String.formatAmount(unit: String = "ریال", isNegative: Boolean = false): String {
+    if (this.contains("-")) {
+        return this.replace("-", "").formatAmount(isNegative = true)
+    }
     var amountString = this
     var mod = amountString.length % 3
     if (mod == 0)

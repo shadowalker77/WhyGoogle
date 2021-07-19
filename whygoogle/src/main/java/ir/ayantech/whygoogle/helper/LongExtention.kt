@@ -1,7 +1,7 @@
 package ir.ayantech.whygoogle.helper
 
 fun Long.formatAmount(unit: String = "ریال"): String {
-    return this.toString().formatAmount(unit, this < 0)
+    return this.toString().formatAmount(unit)
 }
 
 fun Long.toTimeCareString(): String {
