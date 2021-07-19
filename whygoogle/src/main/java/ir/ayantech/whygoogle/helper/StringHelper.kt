@@ -109,3 +109,19 @@ fun String.base64ToBitmap(): Bitmap =
             )
         )
     )
+
+fun String.formatAmount(unit: String = "ریال", isNegative: Boolean = false): String {
+    var amountString = this
+    var mod = amountString.length % 3
+    if (mod == 0)
+        mod = 3
+    while (mod < amountString.length) {
+        amountString =
+            amountString.substring(0, mod) + "," + amountString.substring(mod, amountString.length)
+        mod += 4
+    }
+    val negativeCare = if (isNegative) " -" else ""
+    amountString = "$amountString$negativeCare $unit "
+    if (this == "0 ریال") amountString.replace("0", "صفر")
+    return amountString.trim()
+}
