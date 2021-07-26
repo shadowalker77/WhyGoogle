@@ -3,10 +3,12 @@ package ir.ayantech.whygoogle.activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 
 abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
@@ -96,8 +98,11 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
     fun getFragmentCount() = supportFragmentManager.backStackEntryCount
 
     override fun onBackPressed() {
-        if (getTopFragment()?.onBackPressed() == true)
-            return
-        super.onBackPressed()
+        when {
+            getTopFragment()?.onBackPressed() == true -> {
+            }
+            getFragmentCount() > 1 -> trying { pop() }
+            else -> ActivityCompat.finishAfterTransition(this)
+        }
     }
 }
