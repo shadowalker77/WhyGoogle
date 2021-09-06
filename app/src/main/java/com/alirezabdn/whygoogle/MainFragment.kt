@@ -11,6 +11,9 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
         super.onCreate()
         accessViews {
             testTv.text = "tested now more than once"
+            go.setOnClickListener {
+                start(MainFragment())
+            }
         }
     }
 

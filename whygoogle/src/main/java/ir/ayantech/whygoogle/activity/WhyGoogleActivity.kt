@@ -10,8 +10,9 @@ import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
+import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
-abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
+abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoogleInterface {
     abstract val containerId: Int
 
     val binding: T by viewBinding(binder)
@@ -29,7 +30,11 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
         }
     }
 
-    fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true) {
+    fun start(fragment: WhyGoogleFragment<*>) {
+        start(fragment, false, true)
+    }
+
+    override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
         if (!stack) {
             try {
                 if (getTopFragment()?.javaClass?.simpleName == fragment.javaClass.simpleName)
@@ -63,39 +68,39 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity() {
         return this
     }
 
-    fun startWithPop(fragment: WhyGoogleFragment<*>) {
+    override fun startWithPop(fragment: WhyGoogleFragment<*>) {
         pop()
         start(fragment)
     }
 
-    fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
+    override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
         popTo(target)
         start(fragment)
     }
 
-    fun <P> popTo(target: Class<P>) {
+    override fun <P> popTo(target: Class<P>) {
         while (getTopFragment()?.javaClass?.name != target.name) pop()
     }
 
-    fun pop(from: WhyGoogleFragment<*>? = null) {
-        if (from != null && getTopFragment()?.javaClass?.simpleName != from.javaClass.simpleName)
-            return
+    override fun pop() {
+//        if (from != null && getTopFragment()?.javaClass?.simpleName != from.javaClass.simpleName)
+//            return
         supportFragmentManager.popBackStackImmediate()
         getTopFragment()?.let { onTopFragmentChanged(it) }
     }
 
-    fun popAll() {
+    override fun popAll() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         getTopFragment()?.let { onTopFragmentChanged(it) }
     }
 
-    open fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
+    override fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
     }
 
-    fun getTopFragment() =
+    override fun getTopFragment() =
         supportFragmentManager.findFragmentById(containerId) as? WhyGoogleFragment<*>?
 
-    fun getFragmentCount() = supportFragmentManager.backStackEntryCount
+    override fun getFragmentCount() = supportFragmentManager.backStackEntryCount
 
     override fun onBackPressed() {
         when {

@@ -9,9 +9,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import ir.ayantech.whygoogle.activity.WhyGoogleActivity
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
 import ir.ayantech.whygoogle.helper.trying
+import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
 typealias ViewBindingInflater = (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding
 
@@ -133,26 +133,26 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
     }
 
     fun pop() {
-        (activity as? WhyGoogleActivity<*>)?.pop(this)
+        (activity as? WhyGoogleInterface)?.pop()
     }
 
     fun <P> popTo(target: Class<P>) {
-        (activity as? WhyGoogleActivity<*>)?.popTo(target)
+        (activity as? WhyGoogleInterface)?.popTo(target)
     }
 
     fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true) {
-        (activity as? WhyGoogleActivity<*>)?.start(fragment, popAll, stack)
+        (activity as? WhyGoogleInterface)?.start(fragment, popAll, stack)
     }
 
     fun startWithPop(fragment: WhyGoogleFragment<*>) {
-        (activity as? WhyGoogleActivity<*>)?.startWithPop(fragment)
+        (activity as? WhyGoogleInterface)?.startWithPop(fragment)
     }
 
     fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
-        (activity as? WhyGoogleActivity<*>)?.startWithPopTo(fragment, target)
+        (activity as? WhyGoogleInterface)?.startWithPopTo(fragment, target)
     }
 
     fun popAll() {
-        (activity as? WhyGoogleActivity<*>)?.popAll()
+        (activity as? WhyGoogleInterface)?.popAll()
     }
 }
