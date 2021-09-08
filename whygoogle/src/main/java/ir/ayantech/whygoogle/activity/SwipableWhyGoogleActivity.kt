@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.makeItForceRtl
@@ -24,6 +25,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
+            fragmentHost.rotationY = 180f
             fragmentHost.adapter = it
             fragmentHost.makeItForceRtl()
             fragmentHost.setPageTransformer(IOSPageTransition())
@@ -34,8 +36,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         fragmentHost.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                onTopFragmentChanged(fragmentStack.last())
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                    if (fragmentHost.currentItem == getFragmentCount() - 2) {
+                        fragmentStack.removeLast()
+                        whyGoogleFragmentAdapter.notifyItemRemoved(getFragmentCount())
+                    }
+                    onTopFragmentChanged(fragmentStack.last())
+                }
             }
         })
     }
@@ -49,6 +58,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
         override fun createFragment(position: Int): Fragment =
             fragmentActivity.fragmentStack[position]
+
+        override fun onBindViewHolder(
+            holder: FragmentViewHolder,
+            position: Int,
+            payloads: MutableList<Any>
+        ) {
+            super.onBindViewHolder(holder, position, payloads)
+            holder.itemView.rotationY = 180f
+        }
     }
 
     fun start(fragment: WhyGoogleFragment<*>) {

@@ -9,8 +9,8 @@ fun ViewPager2.makeItForceRtl() {
         try {
             it.isAccessible = true
             val rv = (it.get(this) as RecyclerView)
-            rv.layoutDirection = View.LAYOUT_DIRECTION_RTL
             rv.changeSnapSpeed()
+            rv.overScrollMode = View.OVER_SCROLL_NEVER
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -22,7 +22,7 @@ fun RecyclerView.changeSnapSpeed() {
         this::class.java.superclass.getDeclaredField("mMinFlingVelocity").let {
             it.isAccessible = true
             val value = (it.get(this) as? Int)
-            it.set(this, value!! * 7)
+            it.set(this, value!! * 10)
         }
     } catch (e: Exception) {
         e.printStackTrace()
