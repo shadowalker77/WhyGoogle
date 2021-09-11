@@ -1,5 +1,6 @@
 package com.alirezabdn.whygoogle
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
@@ -14,7 +15,9 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             go.setOnClickListener {
                 start(MainFragment())
             }
-            (activity as MainActivity).disableSwipeBackOnTouch(disablerView)
+            testView.setOnClickListener {
+                Log.d("VVv", "clicked")
+            }
         }
     }
 

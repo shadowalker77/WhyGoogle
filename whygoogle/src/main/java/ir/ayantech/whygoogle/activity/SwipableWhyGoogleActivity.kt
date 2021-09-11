@@ -2,10 +2,7 @@ package ir.ayantech.whygoogle.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
@@ -130,22 +127,4 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         if (fragmentStack.isEmpty()) null else fragmentStack.last()
 
     override fun getFragmentCount(): Int = fragmentStack.size
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun disableSwipeBackOnTouch(view: View) {
-        view.setOnTouchListener { view, motionEvent ->
-            Log.d("uievent", motionEvent.action.toString())
-            when (motionEvent.action) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    fragmentHost.isUserInputEnabled = false
-//                    Log.d("uie", "false")
-//                }
-                MotionEvent.ACTION_UP -> {
-                    fragmentHost.isUserInputEnabled = true
-                    Log.d("uie", "true")
-                }
-            }
-            false
-        }
-    }
 }
