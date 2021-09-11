@@ -40,7 +40,7 @@ class NestedScrollableHost : FrameLayout {
         val orientation = parentViewPager?.orientation ?: return null
         for (i in (viewToCheck.childCount - 1) downTo 0) {
             val childToCheck = viewToCheck.getChildAt(i)
-            if (canViewScroll(childToCheck, orientation, -1f) && canViewScroll(
+            if (canViewScroll(childToCheck, orientation, -1f) || canViewScroll(
                     childToCheck,
                     orientation,
                     1f
