@@ -36,6 +36,10 @@ class NestedScrollableHost : FrameLayout {
                 parentViewPager?.isUserInputEnabled = true
                 Log.d("uie", "true")
             }
+            MotionEvent.ACTION_CANCEL -> {
+                parentViewPager?.isUserInputEnabled = true
+                Log.d("uie", "true")
+            }
         }
     }
 }
