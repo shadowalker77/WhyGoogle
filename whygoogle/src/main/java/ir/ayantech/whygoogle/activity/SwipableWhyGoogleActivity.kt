@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -11,6 +12,7 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.makeItForceRtl
+import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.IOSPageTransition
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -110,8 +112,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     }
 
     override fun pop() {
-        fragmentStack.removeLast()
-        whyGoogleFragmentAdapter.notifyItemRemoved(getFragmentCount())
+        fragmentHost.currentItem = getFragmentCount() - 2
+//        fragmentStack.removeLast()
+//        whyGoogleFragmentAdapter.notifyItemRemoved(getFragmentCount())
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -127,4 +130,13 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         if (fragmentStack.isEmpty()) null else fragmentStack.last()
 
     override fun getFragmentCount(): Int = fragmentStack.size
+
+    override fun onBackPressed() {
+        when {
+            fragmentStack.lastOrNull()?.onBackPressed() == true -> {
+            }
+            getFragmentCount() > 1 -> trying { pop() }
+            else -> ActivityCompat.finishAfterTransition(this)
+        }
+    }
 }

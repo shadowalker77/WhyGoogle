@@ -1,6 +1,5 @@
 package com.alirezabdn.whygoogle
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
@@ -14,9 +13,6 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             testTv.text = "tested now more than once"
             go.setOnClickListener {
                 start(MainFragment())
-            }
-            testView.setOnClickListener {
-                Log.d("VVv", "clicked")
             }
         }
     }
