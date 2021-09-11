@@ -14,6 +14,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             go.setOnClickListener {
                 start(MainFragment())
             }
+            (activity as MainActivity).disableSwipeBackOnTouch(disablerView)
         }
     }
 
