@@ -38,7 +38,7 @@ class NestedScrollableHost : FrameLayout {
 
     private fun getFirstScrollableChild(viewToCheck: ViewGroup = this): View? {
         val orientation = parentViewPager?.orientation ?: return null
-        for (i in (viewToCheck.childCount - 1)..0) {
+        for (i in (viewToCheck.childCount - 1) downTo 0) {
             val childToCheck = viewToCheck.getChildAt(i)
             if (childToCheck is ViewGroup) {
                 val grandChild = getFirstScrollableChild(childToCheck)
