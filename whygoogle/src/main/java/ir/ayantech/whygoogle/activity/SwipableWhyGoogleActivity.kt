@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.makeItForceRtl
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
@@ -24,6 +25,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     abstract val binder: (LayoutInflater) -> T
 
     abstract val fragmentHost: ViewPager2
+
+    private val pendingTransactions = ArrayList<SimpleCallBack>()
 
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
@@ -41,10 +44,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                    if (fragmentHost.currentItem == getFragmentCount() - 2) {
+                    val previousCount = getFragmentCount()
+                    while (fragmentHost.currentItem <= getFragmentCount() - 2) {
                         fragmentStack.removeLast()
-                        whyGoogleFragmentAdapter.notifyItemRemoved(getFragmentCount())
                     }
+                    if (previousCount >= fragmentHost.currentItem + 2)
+                        whyGoogleFragmentAdapter.notifyItemRangeRemoved(
+                            fragmentHost.currentItem + 2,
+                            previousCount
+                        )
                     onTopFragmentChanged(fragmentStack.last())
                 }
             }
@@ -105,16 +113,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     }
 
     override fun <P> popTo(target: Class<P>) {
-        val previousCount = getFragmentCount()
-        while (fragmentStack.last().javaClass != target)
-            fragmentStack.removeLast()
-        whyGoogleFragmentAdapter.notifyItemRangeRemoved(getFragmentCount() - 1, previousCount - 1)
+        trying {
+            fragmentStack.reversed().indexOfFirst { it.javaClass == target }.let {
+                fragmentHost.currentItem = it
+            }
+        }
     }
 
     override fun pop() {
         fragmentHost.currentItem = getFragmentCount() - 2
-//        fragmentStack.removeLast()
-//        whyGoogleFragmentAdapter.notifyItemRemoved(getFragmentCount())
     }
 
     @SuppressLint("NotifyDataSetChanged")
