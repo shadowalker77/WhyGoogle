@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -51,7 +52,24 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
             }
         _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
         trying {
-            mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+            AsyncLayoutInflater(requireContext()).inflate(
+                bindingInflater,
+                _binding!!.mainRl,
+                object : AsyncLayoutInflater.OnInflateFinishedListener {
+                    override fun onInflateFinished(
+                        viewBinding: ViewBinding,
+                        parent: ViewGroup?
+                    ) {
+                        parent?.addView(viewBinding.root)
+                        (viewBinding as? T)?.let {
+                            mainBinding = it
+                            onCreate()
+                            onFragmentVisible()
+                        }
+                    }
+                }
+            )
+//            mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
         }
 //        _binding!!.mainRl.addView(mainBinding.root)
         headerInflater?.let {
@@ -68,10 +86,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         _binding?.dummyToLock?.setOnTouchListener { v, event ->
             _isUILocked
         }
-        return requireNotNull(_binding).root.also {
-            onCreate()
-            onFragmentVisible()
-        }
+        return requireNotNull(_binding).root
     }
 
     fun lockUI() {
