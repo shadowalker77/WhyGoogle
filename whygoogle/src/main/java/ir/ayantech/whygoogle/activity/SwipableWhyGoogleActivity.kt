@@ -51,7 +51,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                     if (previousCount >= fragmentHost.currentItem + 2)
                         whyGoogleFragmentAdapter.notifyItemRangeRemoved(
                             fragmentHost.currentItem + 2,
-                            previousCount
+                            previousCount - fragmentHost.currentItem - 1
                         )
                     onTopFragmentChanged(fragmentStack.last())
                 }
