@@ -63,6 +63,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                         parent?.addView(viewBinding.root)
                         (viewBinding as? T)?.let {
                             mainBinding = it
+                            _binding?.root?.let { preShowProcess(it) }
                             onCreate()
                             onFragmentVisible()
                         }
@@ -82,7 +83,6 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                 footerBinding = it.invoke(inflater, _binding!!.footerRl, true)
             }
         }
-        _binding?.root?.let { preShowProcess(it) }
         _binding?.dummyToLock?.setOnTouchListener { v, event ->
             _isUILocked
         }
