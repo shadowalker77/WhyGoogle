@@ -10,7 +10,7 @@ class IOSPageTransition : ViewPager2.PageTransformer {
             position <= 0 -> {
                 page.alpha = 1f
                 page.translationX = -position / 1.3f * page.width
-                page.alpha = (position * 0.8f + 1f)
+                page.alpha = (position * 0.2f + 1f)
             }
             position <= 1 -> page.alpha = 1f
             else -> page.alpha = 0f
