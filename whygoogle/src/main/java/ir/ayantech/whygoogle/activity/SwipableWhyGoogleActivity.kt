@@ -13,7 +13,10 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
-import ir.ayantech.whygoogle.helper.*
+import ir.ayantech.whygoogle.helper.makeItForceRtl
+import ir.ayantech.whygoogle.helper.setCurrentItem
+import ir.ayantech.whygoogle.helper.trying
+import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.IOSPageTransition
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
@@ -27,14 +30,14 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     abstract val fragmentHost: ViewPager2
 
-    private val pendingTransactions = ArrayList<SimpleCallBack>()
+    val fragmentStack = ArrayList<WhyGoogleFragment<*>>()
 
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
             fragmentHost.rotationY = 180f
-            fragmentHost.adapter = it
             fragmentHost.makeItForceRtl()
             fragmentHost.setPageTransformer(IOSPageTransition())
+            fragmentHost.adapter = it
         }
     }
 
@@ -65,8 +68,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             block()
         }
     }
-
-    val fragmentStack = ArrayList<WhyGoogleFragment<*>>()
 
     private class WhyGoogleFragmentAdapter(private val fragmentActivity: SwipableWhyGoogleActivity<*>) :
         FragmentStateAdapter(fragmentActivity) {
@@ -109,7 +110,14 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
+        if (popAll) {
+            fragmentStack.clear()
+            fragmentStack.add(fragment)
+            whyGoogleFragmentAdapter.notifyDataSetChanged()
+            return
+        }
         fragmentStack.add(fragment)
         whyGoogleFragmentAdapter.notifyItemInserted(getFragmentCount() - 1)
         fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
