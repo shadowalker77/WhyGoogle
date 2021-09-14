@@ -13,16 +13,15 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
-import ir.ayantech.whygoogle.helper.SimpleCallBack
-import ir.ayantech.whygoogle.helper.makeItForceRtl
-import ir.ayantech.whygoogle.helper.trying
-import ir.ayantech.whygoogle.helper.viewBinding
+import ir.ayantech.whygoogle.helper.*
 import ir.ayantech.whygoogle.standard.IOSPageTransition
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
 abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     WhyGoogleInterface {
     val binding: T by viewBinding(binder)
+
+    open val TRANSFORM_DURATION = 350L
 
     abstract val binder: (LayoutInflater) -> T
 
@@ -113,14 +112,14 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
         fragmentStack.add(fragment)
         whyGoogleFragmentAdapter.notifyItemInserted(getFragmentCount() - 1)
-        fragmentHost.currentItem = getFragmentCount() - 1
+        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
     }
 
     override fun startWithPop(fragment: WhyGoogleFragment<*>) {
         fragmentStack.removeLast()
         fragmentStack.add(fragment)
         whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
-        fragmentHost.currentItem = getFragmentCount() - 1
+        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
     }
 
     override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
@@ -130,19 +129,19 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         whyGoogleFragmentAdapter.notifyItemRangeRemoved(getFragmentCount() - 1, previousCount - 1)
         fragmentStack.add(fragment)
         whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
-        fragmentHost.currentItem = getFragmentCount() - 1
+        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
     }
 
     override fun <P> popTo(target: Class<P>) {
         trying {
             fragmentStack.reversed().indexOfFirst { it.javaClass == target }.let {
-                fragmentHost.currentItem = it
+                fragmentHost.setCurrentItem(it, TRANSFORM_DURATION)
             }
         }
     }
 
     override fun pop() {
-        fragmentHost.currentItem = getFragmentCount() - 2
+        fragmentHost.setCurrentItem(getFragmentCount() - 2, TRANSFORM_DURATION)
     }
 
     @SuppressLint("NotifyDataSetChanged")
