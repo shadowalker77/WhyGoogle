@@ -10,7 +10,7 @@ class MainActivity : SwipableWhyGoogleActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        start(MainFragment())
+        lazyStart(MainFragment())
     }
 
     override val binder: (LayoutInflater) -> ActivityMainBinding

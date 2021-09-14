@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
@@ -51,8 +52,15 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
             }
         _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
         trying {
-            _binding!!.mainRl.addView(mainBinding.root)
-//            mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+            if (!this::mainBinding.isInitialized)
+                mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+            _binding!!.mainRl.addView(
+                mainBinding.root,
+                RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT
+                )
+            )
         }
 //        _binding!!.mainRl.addView(mainBinding.root)
         headerInflater?.let {
