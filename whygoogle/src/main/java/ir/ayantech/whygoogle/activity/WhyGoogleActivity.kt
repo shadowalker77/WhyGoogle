@@ -102,6 +102,10 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
 
     override fun getFragmentCount() = supportFragmentManager.backStackEntryCount
 
+    override fun lazyStart(fragment: WhyGoogleFragment<*>) {
+        TODO("Not yet implemented")
+    }
+
     override fun onBackPressed() {
         when {
             getTopFragment()?.onBackPressed() == true -> {

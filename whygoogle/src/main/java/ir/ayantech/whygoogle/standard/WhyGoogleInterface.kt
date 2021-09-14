@@ -5,6 +5,8 @@ import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 interface WhyGoogleInterface {
     fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true)
 
+    fun lazyStart(fragment: WhyGoogleFragment<*>)
+
     fun startWithPop(fragment: WhyGoogleFragment<*>)
 
     fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>)

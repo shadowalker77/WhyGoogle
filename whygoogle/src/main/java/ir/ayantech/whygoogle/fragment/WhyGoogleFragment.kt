@@ -9,7 +9,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -24,7 +23,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> T
 
-    lateinit var mainBinding: T
+    lateinit var mainBinding: ViewBinding
 
     var headerBinding: ViewBinding? = null
 
@@ -36,7 +35,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     @Suppress("UNCHECKED_CAST")
     protected val binding: T
-        get() = mainBinding
+        get() = mainBinding as T
 
     open val recreateOnReturn: Boolean = false
 
@@ -52,24 +51,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
             }
         _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
         trying {
-            AsyncLayoutInflater(requireContext()).inflate(
-                bindingInflater,
-                _binding!!.mainRl,
-                object : AsyncLayoutInflater.OnInflateFinishedListener {
-                    override fun onInflateFinished(
-                        viewBinding: ViewBinding,
-                        parent: ViewGroup?
-                    ) {
-                        parent?.addView(viewBinding.root)
-                        (viewBinding as? T)?.let {
-                            mainBinding = it
-                            _binding?.root?.let { preShowProcess(it) }
-                            onCreate()
-                            onFragmentVisible()
-                        }
-                    }
-                }
-            )
+            _binding!!.mainRl.addView(mainBinding.root)
 //            mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
         }
 //        _binding!!.mainRl.addView(mainBinding.root)
@@ -86,7 +68,11 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         _binding?.dummyToLock?.setOnTouchListener { v, event ->
             _isUILocked
         }
-        return requireNotNull(_binding).root
+        return requireNotNull(_binding).root.also {
+            _binding?.root?.let { preShowProcess(it) }
+            onCreate()
+            onFragmentVisible()
+        }
     }
 
     fun lockUI() {
@@ -169,5 +155,9 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     fun popAll() {
         (activity as? WhyGoogleInterface)?.popAll()
+    }
+
+    fun lazyStart(fragment: WhyGoogleFragment<*>) {
+        (activity as? WhyGoogleInterface)?.lazyStart(fragment)
     }
 }

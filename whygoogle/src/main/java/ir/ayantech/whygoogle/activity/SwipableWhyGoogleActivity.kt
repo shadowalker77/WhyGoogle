@@ -3,6 +3,7 @@ package ir.ayantech.whygoogle.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
+import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.makeItForceRtl
@@ -87,6 +89,25 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     fun start(fragment: WhyGoogleFragment<*>) {
         start(fragment, false, true)
+    }
+
+    override fun lazyStart(fragment: WhyGoogleFragment<*>) {
+        AsyncLayoutInflater(this).inflate(
+            fragment.bindingInflater,
+            null,
+            object : AsyncLayoutInflater.OnInflateFinishedListener {
+                override fun onInflateFinished(
+                    viewBinding: ViewBinding,
+                    parent: ViewGroup?
+                ) {
+                    parent?.addView(viewBinding.root)
+                    (viewBinding).let {
+                        fragment.mainBinding = it
+                    }
+                    start(fragment)
+                }
+            }
+        )
     }
 
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
