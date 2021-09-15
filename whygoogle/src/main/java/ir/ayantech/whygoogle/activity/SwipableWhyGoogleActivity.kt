@@ -112,15 +112,16 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     @SuppressLint("NotifyDataSetChanged")
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
-        if (popAll) {
-            fragmentStack.clear()
-            fragmentStack.add(fragment)
-            whyGoogleFragmentAdapter.notifyDataSetChanged()
-            return
-        }
         fragmentStack.add(fragment)
-        whyGoogleFragmentAdapter.notifyItemInserted(getFragmentCount() - 1)
-        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
+        val position = getFragmentCount() - 1
+        whyGoogleFragmentAdapter.notifyItemInserted(position)
+        if (popAll) {
+            fragmentHost.setCurrentItem(position, false)
+            fragmentStack.removeAll { it != fragment }
+            whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position - 1)
+        } else {
+            fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+        }
     }
 
     override fun startWithPop(fragment: WhyGoogleFragment<*>) {
