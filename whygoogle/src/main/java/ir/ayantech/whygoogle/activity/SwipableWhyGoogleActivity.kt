@@ -85,6 +85,10 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             super.onBindViewHolder(holder, position, payloads)
             holder.itemView.rotationY = 180f
         }
+
+        override fun getItemId(position: Int): Long {
+            return fragmentActivity.fragmentStack[position].creationEpoch
+        }
     }
 
     fun start(fragment: WhyGoogleFragment<*>) {

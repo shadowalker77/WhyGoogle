@@ -14,6 +14,9 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             go.setOnClickListener {
                 start(MainFragment())
             }
+            go2.setOnClickListener {
+                start(SecondFragment(), true)
+            }
         }
     }
 

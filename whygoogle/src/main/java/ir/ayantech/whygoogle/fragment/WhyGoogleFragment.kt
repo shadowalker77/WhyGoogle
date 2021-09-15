@@ -20,6 +20,10 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     private var _isUILocked = false
 
+    val creationEpoch by lazy {
+        System.currentTimeMillis()
+    }
+
     private var _binding: WhyGoogleFragmentContainerBinding? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> T
