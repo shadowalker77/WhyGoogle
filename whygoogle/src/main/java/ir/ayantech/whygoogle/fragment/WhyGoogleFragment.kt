@@ -83,6 +83,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         return requireNotNull(_binding).root.also {
             _binding?.root?.let { preShowProcess(it) }
             onCreate()
+            (activity as? WhyGoogleInterface)?.onTopFragmentChanged(this)
             onFragmentVisible()
         }
     }

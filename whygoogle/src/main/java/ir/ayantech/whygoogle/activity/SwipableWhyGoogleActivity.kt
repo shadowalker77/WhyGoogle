@@ -58,6 +58,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                             previousCount - fragmentHost.currentItem - 1
                         )
                     onTopFragmentChanged(fragmentStack.last())
+                    fragmentStack.last().onFragmentVisible()
                 }
             }
         })
