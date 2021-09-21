@@ -83,8 +83,6 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
     }
 
     override fun pop() {
-//        if (from != null && getTopFragment()?.javaClass?.simpleName != from.javaClass.simpleName)
-//            return
         supportFragmentManager.popBackStackImmediate()
         getTopFragment()?.let { onTopFragmentChanged(it) }
     }
@@ -101,10 +99,6 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         supportFragmentManager.findFragmentById(containerId) as? WhyGoogleFragment<*>?
 
     override fun getFragmentCount() = supportFragmentManager.backStackEntryCount
-
-    override fun lazyStart(fragment: WhyGoogleFragment<*>) {
-        TODO("Not yet implemented")
-    }
 
     override fun onBackPressed() {
         when {
