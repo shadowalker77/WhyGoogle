@@ -8,7 +8,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
-fun ViewPager2.makeItForceRtl() {
+fun ViewPager2.changeToNeedsOfWhyGoogle() {
     this.getChildAt(0).let { rv ->
         (rv as? RecyclerView)?.changeSnapSpeed()
         rv.overScrollMode = View.OVER_SCROLL_NEVER

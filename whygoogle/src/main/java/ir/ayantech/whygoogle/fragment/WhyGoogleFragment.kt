@@ -44,6 +44,8 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
 
     open val recreateOnReturn: Boolean = false
 
+    open val defaultBackground: Int = 0
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +57,9 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                 onFragmentVisible()
             }
         _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
+        if (defaultBackground != 0) {
+            _binding?.root?.setBackgroundResource(defaultBackground)
+        }
         trying {
             if (!this::mainBinding.isInitialized)
                 mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
@@ -66,7 +71,6 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
                 )
             )
         }
-//        _binding!!.mainRl.addView(mainBinding.root)
         headerInflater?.let {
             trying {
                 headerBinding = it.invoke(inflater, _binding!!.headerRl, true)

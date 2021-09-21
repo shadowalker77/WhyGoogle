@@ -14,41 +14,8 @@ import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.fragment.ViewBindingInflater
 import java.util.concurrent.ArrayBlockingQueue
 
-/**
- *
- * Helper class for inflating layouts asynchronously. To use, construct
- * an instance of [AsyncLayoutInflater] on the UI thread and call
- * [.inflate]. The
- * [AsyncLayoutInflater.OnInflateFinishedListener] will be invoked on the UI thread
- * when the inflate request has completed.
- *
- *
- * This is intended for parts of the UI that are created lazily or in
- * response to user interactions. This allows the UI thread to continue
- * to be responsive & animate while the relatively heavy inflate
- * is being performed.
- *
- *
- * For a layout to be inflated asynchronously it needs to have a parent
- * whose [ViewGroup.generateLayoutParams] is thread-safe
- * and all the Views being constructed as part of inflation must not create
- * any [Handler]s or otherwise call [Looper.myLooper]. If the
- * layout that is trying to be inflated cannot be constructed
- * asynchronously for whatever reason, [AsyncLayoutInflater] will
- * automatically fall back to inflating on the UI thread.
- *
- *
- * NOTE that the inflated View hierarchy is NOT added to the parent. It is
- * equivalent to calling [LayoutInflater.inflate]
- * with attachToRoot set to false. Callers will likely want to call
- * [ViewGroup.addView] in the [AsyncLayoutInflater.OnInflateFinishedListener]
- * callback at a minimum.
- *
- *
- * This inflater does not support setting a [LayoutInflater.Factory]
- * nor [LayoutInflater.Factory2]. Similarly it does not support inflating
- * layouts that contain fragments.
- */
+typealias OnInflateFinishedListener = (viewBinding: ViewBinding, parent: ViewGroup?) -> Unit
+
 class AsyncLayoutInflater(context: Context) {
 
     private val mHandlerCallback = Handler.Callback { msg ->
@@ -56,9 +23,7 @@ class AsyncLayoutInflater(context: Context) {
         if (request.view == null) {
             request.view = request.resid?.invoke(mInflater, request.parent, false)
         }
-        request.callback!!.onInflateFinished(
-            request.view!!, request.parent
-        )
+        request.callback?.invoke(request.view!!, request.parent)
         mInflateThread!!.releaseRequest(request)
         true
     }
@@ -81,10 +46,6 @@ class AsyncLayoutInflater(context: Context) {
         request.parent = parent
         request.callback = callback
         mInflateThread!!.enqueue(request)
-    }
-
-    interface OnInflateFinishedListener {
-        fun onInflateFinished(viewBinding: ViewBinding, parent: ViewGroup?)
     }
 
     class InflateRequest internal constructor() {

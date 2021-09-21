@@ -3,7 +3,6 @@ package ir.ayantech.whygoogle.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -13,7 +12,7 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
-import ir.ayantech.whygoogle.helper.makeItForceRtl
+import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
 import ir.ayantech.whygoogle.helper.setCurrentItem
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
@@ -35,7 +34,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
             fragmentHost.rotationY = 180f
-            fragmentHost.makeItForceRtl()
+            fragmentHost.changeToNeedsOfWhyGoogle()
             fragmentHost.setPageTransformer(IOSPageTransition())
             fragmentHost.adapter = it
         }
@@ -96,36 +95,32 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         start(fragment, false, true)
     }
 
-    override fun lazyStart(fragment: WhyGoogleFragment<*>) {
-        AsyncLayoutInflater(this).inflate(
-            fragment.bindingInflater,
-            null,
-            object : AsyncLayoutInflater.OnInflateFinishedListener {
-                override fun onInflateFinished(
-                    viewBinding: ViewBinding,
-                    parent: ViewGroup?
-                ) {
-                    parent?.addView(viewBinding.root)
-                    (viewBinding).let {
-                        fragment.mainBinding = it
-                    }
-                    start(fragment)
-                }
+    private fun WhyGoogleFragment<*>.asyncInflate(callback: (WhyGoogleFragment<*>) -> Unit) {
+        AsyncLayoutInflater(this@SwipableWhyGoogleActivity).inflate(
+            this.bindingInflater,
+            null
+        ) { viewBinding, parent ->
+            parent?.addView(viewBinding.root)
+            (viewBinding).let {
+                mainBinding = it
             }
-        )
+            callback(this)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
-        fragmentStack.add(fragment)
-        val position = getFragmentCount() - 1
-        whyGoogleFragmentAdapter.notifyItemInserted(position)
-        if (popAll) {
-            fragmentHost.setCurrentItem(position, false)
-            fragmentStack.removeAll { it != fragment }
-            whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
-        } else {
-            fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+        fragment.asyncInflate { fragment ->
+            fragmentStack.add(fragment)
+            val position = getFragmentCount() - 1
+            whyGoogleFragmentAdapter.notifyItemInserted(position)
+            if (popAll) {
+                fragmentHost.setCurrentItem(position, false)
+                fragmentStack.removeAll { it != fragment }
+                whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+            } else {
+                fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+            }
         }
     }
 
