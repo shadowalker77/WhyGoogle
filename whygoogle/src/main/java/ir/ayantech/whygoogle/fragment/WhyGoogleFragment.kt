@@ -173,8 +173,4 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
     fun popAll() {
         (activity as? WhyGoogleInterface)?.popAll()
     }
-
-    fun lazyStart(fragment: WhyGoogleFragment<*>) {
-        (activity as? WhyGoogleInterface)?.lazyStart(fragment)
-    }
 }
