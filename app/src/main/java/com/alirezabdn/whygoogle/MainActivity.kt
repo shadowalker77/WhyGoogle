@@ -2,21 +2,21 @@ package com.alirezabdn.whygoogle
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.viewpager2.widget.ViewPager2
 import com.alirezabdn.whygoogle.databinding.ActivityMainBinding
 import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
+import ir.ayantech.whygoogle.widget.SwipeBackContainer
 
 class MainActivity : SwipableWhyGoogleActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lazyStart(MainFragment())
+        start(MainFragment())
     }
 
     override val binder: (LayoutInflater) -> ActivityMainBinding
         get() = ActivityMainBinding::inflate
 
-    override val fragmentHost: ViewPager2
+    override val fragmentHost: SwipeBackContainer
         get() = binding.containerVp
 
 //    override val containerId: Int

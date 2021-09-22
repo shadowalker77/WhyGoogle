@@ -1,9 +1,9 @@
 package ir.ayantech.whygoogle.standard
 
 import android.view.View
-import androidx.viewpager2.widget.ViewPager2
+import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 
-class IOSPageTransition : ViewPager2.PageTransformer {
+class IOSPageTransition : NonFinalViewPager2.PageTransformer {
     override fun transformPage(page: View, position: Float) {
         when {
             position < -1 -> page.alpha = 0f

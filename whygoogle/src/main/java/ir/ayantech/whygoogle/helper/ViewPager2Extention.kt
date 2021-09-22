@@ -6,9 +6,9 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
+import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 
-fun ViewPager2.changeToNeedsOfWhyGoogle() {
+fun NonFinalViewPager2.changeToNeedsOfWhyGoogle() {
     this.getChildAt(0).let { rv ->
         (rv as? RecyclerView)?.changeSnapSpeed()
         rv.overScrollMode = View.OVER_SCROLL_NEVER
@@ -27,7 +27,7 @@ fun RecyclerView.changeSnapSpeed() {
     }
 }
 
-fun ViewPager2.setCurrentItem(
+fun NonFinalViewPager2.setCurrentItem(
     item: Int,
     duration: Long,
     interpolator: TimeInterpolator = AccelerateDecelerateInterpolator(),

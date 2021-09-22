@@ -7,9 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
+import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
+import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
+import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
@@ -18,6 +19,7 @@ import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.IOSPageTransition
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
+import ir.ayantech.whygoogle.widget.SwipeBackContainer
 
 abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     WhyGoogleInterface {
@@ -27,7 +29,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     abstract val binder: (LayoutInflater) -> T
 
-    abstract val fragmentHost: ViewPager2
+    abstract val fragmentHost: SwipeBackContainer
 
     val fragmentStack = ArrayList<WhyGoogleFragment<*>>()
 
@@ -43,7 +45,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        fragmentHost.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        fragmentHost.registerOnPageChangeCallback(object : NonFinalViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
