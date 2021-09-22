@@ -38,10 +38,10 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private fun getFirstScrollableChild(viewToCheck: ViewGroup = this, x: Float, y: Float): View? {
         val orientation = this.orientation
         for (i in (viewToCheck.childCount - 1) downTo 0) {
-            val bounds = Rect()
-            getChildAt(i).getHitRect(bounds)
-            if (!bounds.contains(x.toInt(), y.toInt())) continue
             val childToCheck = viewToCheck.getChildAt(i)
+            val bounds = Rect()
+            childToCheck.getHitRect(bounds)
+            if (!bounds.contains(x.toInt(), y.toInt())) continue
             if (canViewScroll(childToCheck, orientation, -1f) || canViewScroll(
                     childToCheck,
                     orientation,
