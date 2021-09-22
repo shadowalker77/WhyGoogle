@@ -1,6 +1,7 @@
 package ir.ayantech.whygoogle.widget
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -34,9 +35,12 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private var initialX = 0f
     private var initialY = 0f
 
-    private fun getFirstScrollableChild(viewToCheck: ViewGroup = this): View? {
+    private fun getFirstScrollableChild(viewToCheck: ViewGroup = this, x: Float, y: Float): View? {
         val orientation = this.orientation
         for (i in (viewToCheck.childCount - 1) downTo 0) {
+            val bounds = Rect()
+            getChildAt(i).getHitRect(bounds)
+            if (!bounds.contains(x.toInt(), y.toInt())) continue
             val childToCheck = viewToCheck.getChildAt(i)
             if (canViewScroll(childToCheck, orientation, -1f) || canViewScroll(
                     childToCheck,
@@ -46,7 +50,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
             )
                 return childToCheck
             if (childToCheck is ViewGroup) {
-                val grandChild = getFirstScrollableChild(childToCheck)
+                val grandChild = getFirstScrollableChild(childToCheck, x, y)
                 if (grandChild != null) return grandChild
             }
         }
@@ -74,7 +78,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private fun handleInterceptTouchEvent(e: MotionEvent) {
         val orientation = this.orientation
 
-        val firstScrollableChild = getFirstScrollableChild()
+        val firstScrollableChild = getFirstScrollableChild(x = e.x, y = e.y)
         // Early return if child can't scroll in same direction as parent
         if (!canViewScroll(firstScrollableChild, orientation, -1f) && !canViewScroll(
                 firstScrollableChild,
