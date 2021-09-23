@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.viewpager2.widget.ViewPager2
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
+import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -35,7 +36,11 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private var initialX = 0f
     private var initialY = 0f
 
-    private fun getFirstScrollableChild(viewToCheck: ViewGroup = this, x: Float, y: Float): View? {
+    private fun getFirstScrollableChild(
+        viewToCheck: ViewGroup? = (this.adapter as? SwipableWhyGoogleActivity.WhyGoogleFragmentAdapter)?.fragmentActivity?.getTopFragment()?.mainBinding?.root as? ViewGroup,
+        x: Float, y: Float
+    ): View? {
+        if (viewToCheck == null) return null
         val orientation = this.orientation
         for (i in (viewToCheck.childCount - 1) downTo 0) {
             val childToCheck = viewToCheck.getChildAt(i)
@@ -86,13 +91,20 @@ class SwipeBackContainer : NonFinalViewPager2 {
                 1f
             )
         ) {
+            isUserInputEnabled = true
+            return
+        }
+
+        if (firstScrollableChild == null) {
+            isUserInputEnabled = true
             return
         }
 
         if (e.action == MotionEvent.ACTION_DOWN) {
             initialX = e.x
             initialY = e.y
-            parent.requestDisallowInterceptTouchEvent(true)
+            isUserInputEnabled = false
+            firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(true)
         } else if (e.action == MotionEvent.ACTION_MOVE) {
             val dx = e.x - initialX
             val dy = e.y - initialY
@@ -105,7 +117,8 @@ class SwipeBackContainer : NonFinalViewPager2 {
             if (scaledDx > touchSlop || scaledDy > touchSlop) {
                 if (isVpHorizontal == (scaledDy > scaledDx)) {
                     // Gesture is perpendicular, allow all parents to intercept
-                    parent.requestDisallowInterceptTouchEvent(false)
+                    isUserInputEnabled = true
+                    firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(false)
                 } else {
                     // Gesture is parallel, query child if movement in that direction is possible
                     if (canViewScroll(
@@ -115,10 +128,12 @@ class SwipeBackContainer : NonFinalViewPager2 {
                         )
                     ) {
                         // Child can scroll, disallow all parents to intercept
-                        parent.requestDisallowInterceptTouchEvent(true)
+                        isUserInputEnabled = false
+                        firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(true)
                     } else {
                         // Child cannot scroll, allow all parents to intercept
-                        parent.requestDisallowInterceptTouchEvent(false)
+                        isUserInputEnabled = true
+                        firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(false)
                     }
                 }
             }

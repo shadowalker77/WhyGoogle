@@ -71,7 +71,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    private class WhyGoogleFragmentAdapter(private val fragmentActivity: SwipableWhyGoogleActivity<*>) :
+    internal class WhyGoogleFragmentAdapter(val fragmentActivity: SwipableWhyGoogleActivity<*>) :
         FragmentStateAdapter(fragmentActivity) {
 
         override fun getItemCount(): Int = fragmentActivity.getFragmentCount()
