@@ -45,7 +45,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        fragmentHost.registerOnPageChangeCallback(object : NonFinalViewPager2.OnPageChangeCallback() {
+        fragmentHost.registerOnPageChangeCallback(object :
+            NonFinalViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
@@ -53,11 +54,13 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                     while (fragmentHost.currentItem <= getFragmentCount() - 2) {
                         fragmentStack.removeLast()
                     }
-                    if (previousCount >= fragmentHost.currentItem + 2)
+                    if (previousCount >= fragmentHost.currentItem + 2) {
                         whyGoogleFragmentAdapter.notifyItemRangeRemoved(
                             fragmentHost.currentItem + 1,
                             previousCount - fragmentHost.currentItem - 1
                         )
+                        fragmentStack.lastOrNull()?.onBackToFragment()
+                    }
                     onTopFragmentChanged(fragmentStack.last())
                     fragmentStack.last().onFragmentVisible()
                 }
@@ -173,7 +176,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         when {
             fragmentStack.lastOrNull()?.onBackPressed() == true -> {
             }
-            getFragmentCount() > 1 -> trying { pop() }
+            getFragmentCount() > 1 -> trying {
+                pop()
+            }
             else -> ActivityCompat.finishAfterTransition(this)
         }
     }

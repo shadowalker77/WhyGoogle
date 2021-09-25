@@ -1,5 +1,6 @@
 package com.alirezabdn.whygoogle
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -25,6 +26,11 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 override fun createFragment(position: Int): Fragment = SimpleFragment()
             }
         }
+    }
+
+    override fun onBackToFragment() {
+        super.onBackToFragment()
+        Log.d("WhG", "backtofrag")
     }
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> MainFragmentBinding

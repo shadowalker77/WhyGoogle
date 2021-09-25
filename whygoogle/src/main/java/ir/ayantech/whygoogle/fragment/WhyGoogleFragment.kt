@@ -173,4 +173,6 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
     fun popAll() {
         (activity as? WhyGoogleInterface)?.popAll()
     }
+
+    open fun onBackToFragment() {}
 }
