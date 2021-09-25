@@ -9,10 +9,9 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.viewpager2.widget.ViewPager2
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
-import kotlin.math.absoluteValue
+import kotlin.math.abs
 import kotlin.math.sign
 
 class SwipeBackContainer : NonFinalViewPager2 {
@@ -103,38 +102,20 @@ class SwipeBackContainer : NonFinalViewPager2 {
         if (e.action == MotionEvent.ACTION_DOWN) {
             initialX = e.x
             initialY = e.y
-            isUserInputEnabled = false
-            firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(true)
         } else if (e.action == MotionEvent.ACTION_MOVE) {
             val dx = e.x - initialX
             val dy = e.y - initialY
-            val isVpHorizontal = orientation == ViewPager2.ORIENTATION_HORIZONTAL
 
-            // assuming ViewPager2 touch-slop is 2x touch-slop of child
-            val scaledDx = dx.absoluteValue * if (isVpHorizontal) .5f else 1f
-            val scaledDy = dy.absoluteValue * if (isVpHorizontal) 1f else .5f
-
-            if (scaledDx > touchSlop || scaledDy > touchSlop) {
-                if (isVpHorizontal == (scaledDy > scaledDx)) {
-                    // Gesture is perpendicular, allow all parents to intercept
-                    isUserInputEnabled = true
-                    firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(false)
+            if (abs(dy) > abs(dx)) {
+                isUserInputEnabled = true
+                firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
+            } else {
+                if (canViewScroll(firstScrollableChild, orientation, -dx)) {
+                    isUserInputEnabled = false
+                    firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(true)
                 } else {
-                    // Gesture is parallel, query child if movement in that direction is possible
-                    if (canViewScroll(
-                            firstScrollableChild,
-                            orientation,
-                            if (isVpHorizontal) dx else dy
-                        )
-                    ) {
-                        // Child can scroll, disallow all parents to intercept
-                        isUserInputEnabled = false
-                        firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(true)
-                    } else {
-                        // Child cannot scroll, allow all parents to intercept
-                        isUserInputEnabled = true
-                        firstScrollableChild?.parent?.requestDisallowInterceptTouchEvent(false)
-                    }
+                    isUserInputEnabled = true
+                    firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
                 }
             }
         }
