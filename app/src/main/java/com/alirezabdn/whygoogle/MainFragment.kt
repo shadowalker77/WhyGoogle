@@ -33,6 +33,16 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
         Log.d("WhG", "backtofrag")
     }
 
+    override fun onFragmentVisible() {
+        super.onFragmentVisible()
+        Log.d("WhG", "onFragmentVisible")
+    }
+
+    override fun onEnterAnimationEnded() {
+        super.onEnterAnimationEnded()
+        Log.d("WhG", "onEnterAnimationEnded")
+    }
+
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> MainFragmentBinding
         get() = MainFragmentBinding::inflate
 }

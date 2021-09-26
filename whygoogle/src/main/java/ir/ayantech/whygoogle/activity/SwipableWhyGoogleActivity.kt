@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager2.widget.ViewPager2
 import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
 import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
@@ -42,6 +41,12 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
+    private var transitioning = false
+
+    val isTransitioning: Boolean by lazy {
+        transitioning
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -49,7 +54,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             NonFinalViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
-                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                if (state == NonFinalViewPager2.SCROLL_STATE_DRAGGING)
+                    transitioning = true
+                if (state == NonFinalViewPager2.SCROLL_STATE_IDLE) {
                     val previousCount = getFragmentCount()
                     while (fragmentHost.currentItem <= getFragmentCount() - 2) {
                         fragmentStack.removeLast()
@@ -63,6 +70,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                     }
                     onTopFragmentChanged(fragmentStack.last())
                     fragmentStack.last().onFragmentVisible()
+                    if (transitioning)
+                        fragmentStack.lastOrNull()?.onEnterAnimationEnded()
+                    transitioning = false
                 }
             }
         })
