@@ -1,16 +1,20 @@
 package ir.ayantech.whygoogle.widget
 
+import android.animation.Animator
+import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.RequiresApi
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
+import ir.ayantech.whygoogle.helper.SimpleCallBack
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -31,7 +35,6 @@ class SwipeBackContainer : NonFinalViewPager2 {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private var touchSlop = 0
     private var initialX = 0f
     private var initialY = 0f
 
@@ -59,10 +62,6 @@ class SwipeBackContainer : NonFinalViewPager2 {
             }
         }
         return null
-    }
-
-    init {
-        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
     private fun canViewScroll(view: View?, orientation: Int, delta: Float): Boolean {
@@ -119,5 +118,52 @@ class SwipeBackContainer : NonFinalViewPager2 {
                 }
             }
         }
+    }
+
+    fun setCurrentItem(
+        item: Int,
+        duration: Long,
+        interpolator: TimeInterpolator = AccelerateDecelerateInterpolator(),
+        pagePxWidth: Int = width // Default value taken from getWidth() from ViewPager2 view
+    ) {
+        val pxToDrag: Int = pagePxWidth * (item - currentItem)
+        val animator = ValueAnimator.ofInt(0, pxToDrag)
+        var previousValue = 0
+        animator.addUpdateListener { valueAnimator ->
+            val currentValue = valueAnimator.animatedValue as Int
+            val currentPxToDrag = (currentValue - previousValue).toFloat()
+            fakeDragBy(-currentPxToDrag)
+            previousValue = currentValue
+        }
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+                beginFakeDrag()
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                endFakeDrag()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) { /* Ignored */
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) { /* Ignored */
+            }
+        })
+        animator.interpolator = interpolator
+        animator.duration = duration
+        animator.start()
+    }
+
+    fun onPageSettled(callback: SimpleCallBack) {
+        this.registerOnPageChangeCallback(object :
+            NonFinalViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                if (state == SCROLL_STATE_IDLE) {
+                    callback()
+                }
+            }
+        })
     }
 }

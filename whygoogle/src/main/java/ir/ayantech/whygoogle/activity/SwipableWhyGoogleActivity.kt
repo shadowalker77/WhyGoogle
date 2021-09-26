@@ -9,11 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
 import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
-import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
-import ir.ayantech.whygoogle.helper.setCurrentItem
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.IOSPageTransition
@@ -41,41 +39,30 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    private var transitioning = false
-
-    val isTransitioning: Boolean by lazy {
-        transitioning
-    }
+    private var lastKnownFragment: WhyGoogleFragment<*>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        fragmentHost.registerOnPageChangeCallback(object :
-            NonFinalViewPager2.OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
-                if (state == NonFinalViewPager2.SCROLL_STATE_DRAGGING)
-                    transitioning = true
-                if (state == NonFinalViewPager2.SCROLL_STATE_IDLE) {
-                    val previousCount = getFragmentCount()
-                    while (fragmentHost.currentItem <= getFragmentCount() - 2) {
-                        fragmentStack.removeLast()
-                    }
-                    if (previousCount >= fragmentHost.currentItem + 2) {
-                        whyGoogleFragmentAdapter.notifyItemRangeRemoved(
-                            fragmentHost.currentItem + 1,
-                            previousCount - fragmentHost.currentItem - 1
-                        )
-                        fragmentStack.lastOrNull()?.onBackToFragment()
-                    }
-                    onTopFragmentChanged(fragmentStack.last())
-                    fragmentStack.last().onFragmentVisible()
-                    if (transitioning)
-                        fragmentStack.lastOrNull()?.onEnterAnimationEnded()
-                    transitioning = false
-                }
+        fragmentHost.onPageSettled {
+            val previousCount = getFragmentCount()
+            while (fragmentHost.currentItem <= getFragmentCount() - 2) {
+                fragmentStack.removeLast()
             }
-        })
+            if (previousCount >= fragmentHost.currentItem + 2) {
+                whyGoogleFragmentAdapter.notifyItemRangeRemoved(
+                    fragmentHost.currentItem + 1,
+                    previousCount - fragmentHost.currentItem - 1
+                )
+                fragmentStack.lastOrNull()?.onFragmentVisible()
+                fragmentStack.lastOrNull()?.onBackToFragment()
+                onTopFragmentChanged(fragmentStack.last())
+            }
+            if (lastKnownFragment == fragmentStack.lastOrNull())
+                return@onPageSettled
+            fragmentStack.lastOrNull()?.onEnterAnimationEnded()
+            lastKnownFragment = fragmentStack.lastOrNull()
+        }
     }
 
     fun accessViews(block: T.() -> Unit) {
