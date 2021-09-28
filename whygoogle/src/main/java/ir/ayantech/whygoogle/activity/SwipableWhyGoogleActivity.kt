@@ -3,6 +3,8 @@ package ir.ayantech.whygoogle.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -32,6 +34,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
+            fragmentHost.offscreenPageLimit = 3
             fragmentHost.rotationY = 180f
             fragmentHost.changeToNeedsOfWhyGoogle()
             fragmentHost.setPageTransformer(IOSPageTransition())
@@ -116,13 +119,22 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             fragmentStack.add(fragment)
             val position = getFragmentCount() - 1
             whyGoogleFragmentAdapter.notifyItemInserted(position)
-            if (popAll) {
-                fragmentHost.setCurrentItem(position, false)
-                fragmentStack.removeAll { it != fragment }
-                whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
-            } else {
-                fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+            (fragment.mainBinding.root as? ViewGroup)?.let {
+                it.viewTreeObserver.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (popAll) {
+                            fragmentHost.setCurrentItem(position, false)
+                            fragmentStack.removeAll { it != fragment }
+                            whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+                        } else {
+                            fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+                        }
+                        it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
             }
+
         }
     }
 
