@@ -115,6 +115,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     @SuppressLint("NotifyDataSetChanged")
     override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
+        if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass)
+            return
         fragment.asyncInflate { fragment ->
             fragmentStack.add(fragment)
             val position = getFragmentCount() - 1
@@ -134,7 +136,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                     }
                 })
             }
-
         }
     }
 

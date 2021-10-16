@@ -15,7 +15,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
         accessViews {
             testTv.text = "tested now more than once"
             go.setOnClickListener {
-                start(MainFragment())
+                start(MainFragment(), popAll = true)
             }
             go2.setOnClickListener {
                 start(SecondFragment(), true)
