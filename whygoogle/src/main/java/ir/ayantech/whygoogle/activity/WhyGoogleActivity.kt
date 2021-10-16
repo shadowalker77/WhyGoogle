@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -31,10 +32,15 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
     }
 
     fun start(fragment: WhyGoogleFragment<*>) {
-        start(fragment, false, true)
+        start(fragment, false, true, null)
     }
 
-    override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
+    override fun start(
+        fragment: WhyGoogleFragment<*>,
+        popAll: Boolean,
+        stack: Boolean,
+        onFragmentCreationEndedCallback: SimpleCallBack?
+    ) {
         if (!stack) {
             try {
                 if (getTopFragment()?.javaClass?.simpleName == fragment.javaClass.simpleName)

@@ -13,6 +13,7 @@ import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
 import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
@@ -97,7 +98,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     }
 
     fun start(fragment: WhyGoogleFragment<*>) {
-        start(fragment, false, true)
+        start(fragment, false, true, null)
     }
 
     private fun WhyGoogleFragment<*>.asyncInflate(callback: (WhyGoogleFragment<*>) -> Unit) {
@@ -114,7 +115,12 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean, stack: Boolean) {
+    override fun start(
+        fragment: WhyGoogleFragment<*>,
+        popAll: Boolean,
+        stack: Boolean,
+        onFragmentCreationEndedCallback: SimpleCallBack?
+    ) {
         if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass)
             return
         fragment.asyncInflate { fragment ->
@@ -130,7 +136,11 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                             fragmentStack.removeAll { it != fragment }
                             whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
                         } else {
-                            fragmentHost.setCurrentItem(position, TRANSFORM_DURATION)
+                            fragmentHost.setCurrentItem(
+                                position,
+                                TRANSFORM_DURATION,
+                                onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                            )
                         }
                         it.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }

@@ -124,7 +124,8 @@ class SwipeBackContainer : NonFinalViewPager2 {
         item: Int,
         duration: Long,
         interpolator: TimeInterpolator = AccelerateDecelerateInterpolator(),
-        pagePxWidth: Int = width // Default value taken from getWidth() from ViewPager2 view
+        pagePxWidth: Int = width, // Default value taken from getWidth() from ViewPager2 view
+        onFragmentCreationEndedCallback: SimpleCallBack? = null
     ) {
         val pxToDrag: Int = pagePxWidth * (item - currentItem)
         val animator = ValueAnimator.ofInt(0, pxToDrag)
@@ -142,6 +143,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
 
             override fun onAnimationEnd(animation: Animator?) {
                 endFakeDrag()
+                onFragmentCreationEndedCallback?.invoke()
             }
 
             override fun onAnimationCancel(animation: Animator?) { /* Ignored */

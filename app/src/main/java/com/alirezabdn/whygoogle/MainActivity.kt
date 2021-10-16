@@ -12,7 +12,9 @@ class MainActivity : SwipableWhyGoogleActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        start(MainFragment())
+        start(MainFragment(), onFragmentCreationEndedCallback = {
+            Log.d("WhG", "onFragmentCreationEndedCallback")
+        })
     }
 
     override val binder: (LayoutInflater) -> ActivityMainBinding
