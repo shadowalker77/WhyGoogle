@@ -36,7 +36,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this).also {
             fragmentHost.offscreenPageLimit = 3
-            fragmentHost.rotationY = 180f
+            fragmentHost.rotation = 180f
             fragmentHost.changeToNeedsOfWhyGoogle()
             fragmentHost.setPageTransformer(IOSPageTransition())
             fragmentHost.adapter = it
@@ -89,7 +89,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             payloads: MutableList<Any>
         ) {
             super.onBindViewHolder(holder, position, payloads)
-            holder.itemView.rotationY = 180f
+            holder.itemView.rotation = 180f
         }
 
         override fun getItemId(position: Int): Long {
@@ -121,7 +121,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         stack: Boolean,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
-        if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass)
+        if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll)
             return
         fragment.asyncInflate { fragment ->
             fragmentStack.add(fragment)

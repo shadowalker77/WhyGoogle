@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 
@@ -15,7 +15,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
         accessViews {
             testTv.text = "tested now more than once"
             go.setOnClickListener {
-                start(MainFragment(), popAll = true)
+                start(MainFragment())
             }
             go2.setOnClickListener {
                 start(SecondFragment(), true)
@@ -27,6 +27,9 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             }
         }
     }
+
+    override val defaultBackground: Int
+        get() = R.color.teal_700
 
     override fun onBackToFragment() {
         super.onBackToFragment()
