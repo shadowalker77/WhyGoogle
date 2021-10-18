@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 

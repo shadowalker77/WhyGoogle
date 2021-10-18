@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.RequiresApi
-import androidx.core.view.ViewCompat
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
 import ir.ayantech.whygoogle.helper.SimpleCallBack
@@ -49,7 +48,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
             val childToCheck = viewToCheck.getChildAt(i)
             val bounds = Rect()
             childToCheck.getHitRect(bounds)
-            if (!bounds.contains(x.toInt(), y.toInt())) continue
+            if (!bounds.contains(x.toInt(), this@SwipeBackContainer.height - y.toInt())) continue
             if (canViewScroll(childToCheck, orientation, -1f) || canViewScroll(
                     childToCheck,
                     orientation,
@@ -66,7 +65,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
     }
 
     private fun canViewScroll(view: View?, orientation: Int, delta: Float): Boolean {
-        val direction = delta.sign.toInt()
+        val direction = -delta.sign.toInt()
         return when (orientation) {
             0 -> view?.canScrollHorizontally(direction) ?: false
             1 -> view?.canScrollVertically(direction) ?: false

@@ -11,7 +11,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 30
         versionCode 1
-        versionName "0.4.13"
+        versionName "0.4.14"
     }
     buildFeatures {
         viewBinding true
@@ -39,5 +39,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
     implementation "androidx.lifecycle:lifecycle-process:2.3.1"
-    api 'com.github.shadowalker77:nonfinalviewpager2:0.2.3'
+    api 'com.github.shadowalker77:nonfinalviewpager2:0.2.4'
 }
