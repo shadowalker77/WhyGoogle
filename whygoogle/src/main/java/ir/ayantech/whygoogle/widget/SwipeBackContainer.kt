@@ -38,8 +38,6 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private var initialX = 0f
     private var initialY = 0f
 
-    private var motionDetected = false
-
     private fun getFirstScrollableChild(
         viewToCheck: ViewGroup? = (this.adapter as? SwipableWhyGoogleActivity.WhyGoogleFragmentAdapter)?.fragmentActivity?.getTopFragment()?.mainBinding?.root as? ViewGroup,
         x: Float, y: Float
@@ -81,6 +79,10 @@ class SwipeBackContainer : NonFinalViewPager2 {
     }
 
     private fun handleInterceptTouchEvent(e: MotionEvent) {
+        if (this@SwipeBackContainer.adapter?.itemCount == 1) {
+            isUserInputEnabled = false
+            return
+        }
         val orientation = this.orientation
 
         val firstScrollableChild = getFirstScrollableChild(x = e.x, y = e.y)
@@ -106,18 +108,14 @@ class SwipeBackContainer : NonFinalViewPager2 {
                 initialY = e.y
             }
             MotionEvent.ACTION_MOVE -> {
-                if (motionDetected)
-                    return
                 val dx = e.x - initialX
                 val dy = e.y - initialY
 
                 if (abs(dy) > abs(dx)) {
-                    motionDetected = true
                     isUserInputEnabled = true
                     firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
                 } else {
                     if (canViewScroll(firstScrollableChild, orientation, -dx)) {
-                        motionDetected = true
                         isUserInputEnabled = false
                         firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(true)
                     } else {
@@ -126,7 +124,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
                     }
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> motionDetected = false
+//            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> motionDetected = false
         }
     }
 
@@ -172,6 +170,7 @@ class SwipeBackContainer : NonFinalViewPager2 {
             NonFinalViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
+                isUserInputEnabled = this@SwipeBackContainer.adapter?.itemCount != 1
                 if (state == SCROLL_STATE_IDLE) {
                     callback()
                 }
