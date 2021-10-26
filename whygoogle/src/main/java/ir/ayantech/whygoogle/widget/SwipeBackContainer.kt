@@ -38,6 +38,8 @@ class SwipeBackContainer : NonFinalViewPager2 {
     private var initialX = 0f
     private var initialY = 0f
 
+    private var motionDetected = false
+
     private fun getFirstScrollableChild(
         viewToCheck: ViewGroup? = (this.adapter as? SwipableWhyGoogleActivity.WhyGoogleFragmentAdapter)?.fragmentActivity?.getTopFragment()?.mainBinding?.root as? ViewGroup,
         x: Float, y: Float
@@ -98,25 +100,33 @@ class SwipeBackContainer : NonFinalViewPager2 {
             return
         }
 
-        if (e.action == MotionEvent.ACTION_DOWN) {
-            initialX = e.x
-            initialY = e.y
-        } else if (e.action == MotionEvent.ACTION_MOVE) {
-            val dx = e.x - initialX
-            val dy = e.y - initialY
+        when (e.action) {
+            MotionEvent.ACTION_DOWN -> {
+                initialX = e.x
+                initialY = e.y
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (motionDetected)
+                    return
+                val dx = e.x - initialX
+                val dy = e.y - initialY
 
-            if (abs(dy) > abs(dx)) {
-                isUserInputEnabled = true
-                firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
-            } else {
-                if (canViewScroll(firstScrollableChild, orientation, -dx)) {
-                    isUserInputEnabled = false
-                    firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(true)
-                } else {
+                if (abs(dy) > abs(dx)) {
+                    motionDetected = true
                     isUserInputEnabled = true
                     firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
+                } else {
+                    if (canViewScroll(firstScrollableChild, orientation, -dx)) {
+                        motionDetected = true
+                        isUserInputEnabled = false
+                        firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(true)
+                    } else {
+                        isUserInputEnabled = true
+                        firstScrollableChild.parent?.requestDisallowInterceptTouchEvent(false)
+                    }
                 }
             }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> motionDetected = false
         }
     }
 
