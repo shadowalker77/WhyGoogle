@@ -117,15 +117,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     }
 
-    fun start(
-        fragment: WhyGoogleFragment<*>,
-        onFragmentCreationEndedCallback: SimpleCallBack? = null
-    ) {
-        transactions.add {
-            start(fragment, false, true, LaunchMode.NORMAL, null)
-        }
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     override fun start(
         fragment: WhyGoogleFragment<*>,
@@ -215,7 +206,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    override fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>? {
+    override fun <T : WhyGoogleFragment<*>> getFragmentByClass(target: Class<T>): T? {
         TODO("Not yet implemented")
     }
 }

@@ -32,10 +32,6 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         }
     }
 
-    fun start(fragment: WhyGoogleFragment<*>) {
-        start(fragment, false, true, LaunchMode.NORMAL, null)
-    }
-
     override fun start(
         fragment: WhyGoogleFragment<*>,
         popAll: Boolean,
@@ -62,11 +58,12 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
                     )
                 }
             }
-            .addOrReplace(containerId,
+            .addOrReplace(
+                containerId,
                 if (launchMode == LaunchMode.SINGLE_TASK) getFragmentByClass(fragment.javaClass)
                     ?: fragment else fragment
             )
-            .addToBackStack(fragment.javaClass.simpleName)
+            .addToBackStack(fragment.javaClass.name)
             .commitAllowingStateLoss()
         onTopFragmentChanged(fragment)
     }
@@ -120,7 +117,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         }
     }
 
-    override fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>? {
-        return supportFragmentManager.findFragmentByTag(target.name) as? WhyGoogleFragment<*>
+    override fun <T : WhyGoogleFragment<*>> getFragmentByClass(target: Class<T>): T? {
+        return supportFragmentManager.findFragmentByTag(target.name) as? T
     }
 }

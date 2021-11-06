@@ -11,13 +11,14 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
+import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
 typealias ViewBindingInflater = (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding
 
-abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
+abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterface {
 
     private var _isUILocked = false
 
@@ -151,28 +152,55 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         return false
     }
 
-    fun pop() {
+    override fun pop() {
         (activity as? WhyGoogleInterface)?.pop()
     }
 
-    fun <P> popTo(target: Class<P>) {
+    override fun <P> popTo(target: Class<P>) {
         (activity as? WhyGoogleInterface)?.popTo(target)
     }
 
-    fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, launchMode: LaunchMode = LaunchMode.NORMAL, stack: Boolean = true) {
-        (activity as? WhyGoogleInterface)?.start(fragment, popAll, stack, launchMode)
+    override fun start(
+        fragment: WhyGoogleFragment<*>,
+        popAll: Boolean,
+        stack: Boolean,
+        launchMode: LaunchMode,
+        onFragmentCreationEndedCallback: SimpleCallBack?
+    ) {
+        (activity as? WhyGoogleInterface)?.start(
+            fragment,
+            popAll,
+            stack,
+            launchMode,
+            onFragmentCreationEndedCallback
+        )
     }
 
-    fun startWithPop(fragment: WhyGoogleFragment<*>) {
+    override fun startWithPop(fragment: WhyGoogleFragment<*>) {
         (activity as? WhyGoogleInterface)?.startWithPop(fragment)
     }
 
-    fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
+    override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
         (activity as? WhyGoogleInterface)?.startWithPopTo(fragment, target)
     }
 
-    fun popAll() {
+    override fun popAll() {
         (activity as? WhyGoogleInterface)?.popAll()
+    }
+
+    override fun <T : WhyGoogleFragment<*>> getFragmentByClass(target: Class<T>): T? {
+        return (activity as? WhyGoogleInterface)?.getFragmentByClass(target)
+    }
+
+    override fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
+    }
+
+    override fun getTopFragment(): WhyGoogleFragment<*>? {
+        return (activity as? WhyGoogleInterface)?.getTopFragment()
+    }
+
+    override fun getFragmentCount(): Int? {
+        return (activity as? WhyGoogleInterface)?.getFragmentCount()
     }
 
     open fun onBackToFragment() {}

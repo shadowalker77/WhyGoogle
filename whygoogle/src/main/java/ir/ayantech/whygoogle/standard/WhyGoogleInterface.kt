@@ -4,6 +4,14 @@ import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.SimpleCallBack
 
 interface WhyGoogleInterface {
+
+    fun start(
+        fragment: WhyGoogleFragment<*>,
+        onFragmentCreationEndedCallback: SimpleCallBack? = null
+    ) {
+        start(fragment, false, true, LaunchMode.NORMAL, onFragmentCreationEndedCallback)
+    }
+
     fun start(
         fragment: WhyGoogleFragment<*>,
         popAll: Boolean = false,
@@ -26,7 +34,7 @@ interface WhyGoogleInterface {
 
     fun getTopFragment(): WhyGoogleFragment<*>?
 
-    fun getFragmentCount(): Int
+    fun getFragmentCount(): Int?
 
-    fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>?
+    fun <T : WhyGoogleFragment<*>> getFragmentByClass(target: Class<T>): T?
 }
