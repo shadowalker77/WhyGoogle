@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
 import ir.ayantech.whygoogle.helper.SimpleCallBack
+import ir.ayantech.whygoogle.helper.detachFromParent
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -107,6 +108,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
 
     override fun onDestroy() {
         super.onDestroy()
+        mainBinding.root.detachFromParent()
         _binding = null
     }
 
