@@ -18,7 +18,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 start(MainFragment())
             }
             go2.setOnClickListener {
-                start(SecondFragment(), true)
+                start(SecondFragment())
             }
             binding.myVp2.adapter = object : FragmentStateAdapter(this@MainFragment) {
                 override fun getItemCount(): Int = 4

@@ -11,6 +11,7 @@ import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.SimpleCallBack
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
+import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
 abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoogleInterface {
@@ -32,13 +33,14 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
     }
 
     fun start(fragment: WhyGoogleFragment<*>) {
-        start(fragment, false, true, null)
+        start(fragment, false, true, LaunchMode.NORMAL, null)
     }
 
     override fun start(
         fragment: WhyGoogleFragment<*>,
         popAll: Boolean,
         stack: Boolean,
+        launchMode: LaunchMode,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
         if (!stack) {
@@ -60,7 +62,10 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
                     )
                 }
             }
-            .addOrReplace(containerId, fragment)
+            .addOrReplace(containerId,
+                if (launchMode == LaunchMode.SINGLE_TASK) getFragmentByClass(fragment.javaClass)
+                    ?: fragment else fragment
+            )
             .addToBackStack(fragment.javaClass.simpleName)
             .commitAllowingStateLoss()
         onTopFragmentChanged(fragment)
@@ -113,5 +118,9 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
             getFragmentCount() > 1 -> trying { pop() }
             else -> ActivityCompat.finishAfterTransition(this)
         }
+    }
+
+    override fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>? {
+        return supportFragmentManager.findFragmentByTag(target.name) as? WhyGoogleFragment<*>
     }
 }

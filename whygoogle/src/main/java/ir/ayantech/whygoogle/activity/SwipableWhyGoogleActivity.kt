@@ -18,6 +18,7 @@ import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
 import ir.ayantech.whygoogle.helper.trying
 import ir.ayantech.whygoogle.helper.viewBinding
 import ir.ayantech.whygoogle.standard.IOSPageTransition
+import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 import ir.ayantech.whygoogle.widget.SwipeBackContainer
 
@@ -97,10 +98,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    fun start(fragment: WhyGoogleFragment<*>) {
-        start(fragment, false, true, null)
-    }
-
     private fun WhyGoogleFragment<*>.asyncInflate(callback: (WhyGoogleFragment<*>) -> Unit) {
         AsyncLayoutInflater(this@SwipableWhyGoogleActivity).inflate(
             this.bindingInflater,
@@ -114,11 +111,27 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
+    private var transactions = ArrayList<SimpleCallBack>()
+
+    private fun executeLastTransaction() {
+
+    }
+
+    fun start(
+        fragment: WhyGoogleFragment<*>,
+        onFragmentCreationEndedCallback: SimpleCallBack? = null
+    ) {
+        transactions.add {
+            start(fragment, false, true, LaunchMode.NORMAL, null)
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun start(
         fragment: WhyGoogleFragment<*>,
         popAll: Boolean,
         stack: Boolean,
+        launchMode: LaunchMode,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
         if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll)
@@ -153,7 +166,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         fragmentStack.removeLast()
         fragmentStack.add(fragment)
         whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
-        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
     }
 
     override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
@@ -201,5 +213,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             }
             else -> ActivityCompat.finishAfterTransition(this)
         }
+    }
+
+    override fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>? {
+        TODO("Not yet implemented")
     }
 }

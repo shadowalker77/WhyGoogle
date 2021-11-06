@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ir.ayantech.whygoogle.databinding.WhyGoogleFragmentContainerBinding
 import ir.ayantech.whygoogle.helper.trying
+import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
 
 typealias ViewBindingInflater = (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding
@@ -62,7 +63,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         }
         trying {
             if (!this::mainBinding.isInitialized)
-                mainBinding = bindingInflater.invoke(inflater, _binding!!.mainRl, true)
+                mainBinding = bindingInflater.invoke(inflater, null, false)
             _binding!!.mainRl.addView(
                 mainBinding.root,
                 RelativeLayout.LayoutParams(
@@ -158,8 +159,8 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment() {
         (activity as? WhyGoogleInterface)?.popTo(target)
     }
 
-    fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, stack: Boolean = true) {
-        (activity as? WhyGoogleInterface)?.start(fragment, popAll, stack)
+    fun start(fragment: WhyGoogleFragment<*>, popAll: Boolean = false, launchMode: LaunchMode = LaunchMode.NORMAL, stack: Boolean = true) {
+        (activity as? WhyGoogleInterface)?.start(fragment, popAll, stack, launchMode)
     }
 
     fun startWithPop(fragment: WhyGoogleFragment<*>) {

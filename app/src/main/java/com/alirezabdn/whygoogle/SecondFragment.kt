@@ -13,5 +13,8 @@ class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
     override fun onCreate() {
         super.onCreate()
         binding.go2.makeGone()
+        binding.go.setOnClickListener {
+            startWithPop(MainFragment())
+        }
     }
 }

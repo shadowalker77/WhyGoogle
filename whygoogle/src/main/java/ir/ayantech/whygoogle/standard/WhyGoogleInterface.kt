@@ -8,6 +8,7 @@ interface WhyGoogleInterface {
         fragment: WhyGoogleFragment<*>,
         popAll: Boolean = false,
         stack: Boolean = true,
+        launchMode: LaunchMode,
         onFragmentCreationEndedCallback: SimpleCallBack? = null
     )
 
@@ -26,4 +27,6 @@ interface WhyGoogleInterface {
     fun getTopFragment(): WhyGoogleFragment<*>?
 
     fun getFragmentCount(): Int
+
+    fun <T> getFragmentByClass(target: Class<T>): WhyGoogleFragment<*>?
 }
