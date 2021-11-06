@@ -41,7 +41,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
     ) {
         if (!stack) {
             try {
-                if (getTopFragment()?.javaClass?.simpleName == fragment.javaClass.simpleName)
+                if (getTopFragment()?.javaClass?.name == fragment.javaClass.name)
                     return
             } catch (e: Exception) {
             }
@@ -72,7 +72,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         containerId: Int,
         fragment: WhyGoogleFragment<*>
     ): FragmentTransaction {
-        this.replace(containerId, fragment)
+        this.replace(containerId, fragment, fragment.javaClass.name)
         return this
     }
 
