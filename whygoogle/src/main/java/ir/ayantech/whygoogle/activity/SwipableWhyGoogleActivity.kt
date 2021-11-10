@@ -67,6 +67,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                 return@onPageSettled
             fragmentStack.lastOrNull()?.onEnterAnimationEnded()
             lastKnownFragment = fragmentStack.lastOrNull()
+            transactioning = false
             executeLastTransaction()
         }
     }
@@ -112,10 +113,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
+    @Volatile
+    private var transactioning = false
     private var transactions = ArrayList<SimpleCallBack>()
 
     private fun executeLastTransaction() {
         synchronized(this) {
+            if (transactioning)
+                return@synchronized
+            transactioning = true
             val transaction = transactions.lastOrNull()
             transaction?.let {
                 transactions.remove(it)
