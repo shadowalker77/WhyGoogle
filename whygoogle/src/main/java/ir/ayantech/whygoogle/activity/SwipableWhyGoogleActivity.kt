@@ -67,6 +67,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                 return@onPageSettled
             fragmentStack.lastOrNull()?.onEnterAnimationEnded()
             lastKnownFragment = fragmentStack.lastOrNull()
+            executeLastTransaction()
         }
     }
 
@@ -114,7 +115,13 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     private var transactions = ArrayList<SimpleCallBack>()
 
     private fun executeLastTransaction() {
-
+        synchronized(this) {
+            val transaction = transactions.lastOrNull()
+            transaction?.let {
+                transactions.remove(it)
+                it.invoke()
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -125,66 +132,85 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         launchMode: LaunchMode,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
-        if (getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll)
-            return
-        fragment.asyncInflate { fragment ->
-            fragmentStack.add(fragment)
-            val position = getFragmentCount() - 1
-            whyGoogleFragmentAdapter.notifyItemInserted(position)
-            (fragment.mainBinding.root as? ViewGroup)?.let {
-                it.viewTreeObserver.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        if (popAll) {
-                            fragmentHost.setCurrentItem(position, false)
-                            fragmentStack.removeAll { it != fragment }
-                            whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
-                        } else {
-                            fragmentHost.setCurrentItem(
-                                position,
-                                TRANSFORM_DURATION,
-                                onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
-                            )
-                        }
-                        it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        transactions.add {
+            if (!(getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll))
+                fragment.asyncInflate { fragment ->
+                    fragmentStack.add(fragment)
+                    val position = getFragmentCount() - 1
+                    whyGoogleFragmentAdapter.notifyItemInserted(position)
+                    (fragment.mainBinding.root as? ViewGroup)?.let {
+                        it.viewTreeObserver.addOnGlobalLayoutListener(object :
+                            ViewTreeObserver.OnGlobalLayoutListener {
+                            override fun onGlobalLayout() {
+                                if (popAll) {
+                                    fragmentHost.setCurrentItem(position, false)
+                                    fragmentStack.removeAll { it != fragment }
+                                    whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+                                } else {
+                                    fragmentHost.setCurrentItem(
+                                        position,
+                                        TRANSFORM_DURATION,
+                                        onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                                    )
+                                }
+                                it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            }
+                        })
                     }
-                })
-            }
+                }
         }
+        executeLastTransaction()
     }
 
     override fun startWithPop(fragment: WhyGoogleFragment<*>) {
-        fragmentStack.removeLast()
-        fragmentStack.add(fragment)
-        whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
-    }
-
-    override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
-        val previousCount = getFragmentCount()
-        while (fragmentStack.last().javaClass != target)
+        transactions.add {
             fragmentStack.removeLast()
-        whyGoogleFragmentAdapter.notifyItemRangeRemoved(getFragmentCount() - 1, previousCount - 1)
-        fragmentStack.add(fragment)
-        whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
-        fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
-    }
-
-    override fun <P> popTo(target: Class<P>) {
-        trying {
-            fragmentStack.reversed().indexOfFirst { it.javaClass == target }.let {
-                fragmentHost.setCurrentItem(it, TRANSFORM_DURATION)
-            }
+            fragmentStack.add(fragment)
+            whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
         }
     }
 
+    override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
+        transactions.add {
+            val previousCount = getFragmentCount()
+            while (fragmentStack.last().javaClass != target)
+                fragmentStack.removeLast()
+            whyGoogleFragmentAdapter.notifyItemRangeRemoved(
+                getFragmentCount() - 1,
+                previousCount - 1
+            )
+            fragmentStack.add(fragment)
+            whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
+            fragmentHost.setCurrentItem(getFragmentCount() - 1, TRANSFORM_DURATION)
+        }
+        executeLastTransaction()
+    }
+
+    override fun <P> popTo(target: Class<P>) {
+        transactions.add {
+            trying {
+                fragmentStack.reversed().indexOfFirst { it.javaClass == target }.let {
+                    fragmentHost.setCurrentItem(it, TRANSFORM_DURATION)
+                }
+            }
+        }
+        executeLastTransaction()
+    }
+
     override fun pop() {
-        fragmentHost.setCurrentItem(getFragmentCount() - 2, TRANSFORM_DURATION)
+        transactions.add {
+            fragmentHost.setCurrentItem(getFragmentCount() - 2, TRANSFORM_DURATION)
+        }
+        executeLastTransaction()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun popAll() {
-        fragmentStack.clear()
-        whyGoogleFragmentAdapter.notifyDataSetChanged()
+        transactions.add {
+            fragmentStack.clear()
+            whyGoogleFragmentAdapter.notifyDataSetChanged()
+        }
+        executeLastTransaction()
     }
 
     override fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
