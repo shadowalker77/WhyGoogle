@@ -154,6 +154,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                                     fragmentHost.setCurrentItem(position, false)
                                     fragmentStack.removeAll { it != fragment }
                                     whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+                                    transactioning = false
                                 } else {
                                     fragmentHost.setCurrentItem(
                                         position,
