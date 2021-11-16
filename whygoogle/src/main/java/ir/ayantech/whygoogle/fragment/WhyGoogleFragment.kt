@@ -108,7 +108,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
 
     override fun onDestroy() {
         super.onDestroy()
-        mainBinding.root.detachFromParent()
+        trying { mainBinding.root.detachFromParent() }
         _binding = null
     }
 
