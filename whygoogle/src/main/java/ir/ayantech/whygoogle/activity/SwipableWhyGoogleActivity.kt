@@ -176,6 +176,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             fragmentStack.removeLast()
             fragmentStack.add(fragment)
             whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
+            transactioning = false
         }
     }
 
@@ -218,6 +219,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         transactions.add {
             fragmentStack.clear()
             whyGoogleFragmentAdapter.notifyDataSetChanged()
+            transactioning = false
         }
         executeLastTransaction()
     }
