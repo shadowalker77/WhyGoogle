@@ -178,6 +178,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             whyGoogleFragmentAdapter.notifyItemChanged(getFragmentCount() - 1)
             transactioning = false
         }
+        executeLastTransaction()
     }
 
     override fun <P> startWithPopTo(fragment: WhyGoogleFragment<*>, target: Class<P>) {
