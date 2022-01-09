@@ -140,8 +140,9 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         launchMode: LaunchMode,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
+        if ((getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll))
+            return
         transactions.add {
-            if (!(getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll))
                 fragment.asyncInflate { fragment ->
                     fragmentStack.add(fragment)
                     val position = getFragmentCount() - 1
