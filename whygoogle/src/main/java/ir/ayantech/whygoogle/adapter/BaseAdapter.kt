@@ -3,6 +3,7 @@ package ir.ayantech.whygoogle.adapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlin.random.Random
@@ -16,6 +17,10 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     RecyclerView.Adapter<ViewHolder>() {
 
     var parentRv: RecyclerView? = null
+    var itemTouchHelperCallback: RecyclerItemTouchHelper? = null
+
+    open val dragDirections = 0
+    open val swipeDirections = 0
 
     override fun getItemId(position: Int): Long {
         return itemsToView[position].hashCode().toLong()
@@ -24,6 +29,8 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.parentRv = recyclerView
+        this.itemTouchHelperCallback = RecyclerItemTouchHelper(dragDirections, swipeDirections, this@BaseAdapter)
+        ItemTouchHelper(itemTouchHelperCallback!!).attachToRecyclerView(parentRv)
     }
 
     fun filterItems(condition: (T) -> Boolean) {
@@ -41,6 +48,9 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
 
     open fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         return true
+    }
+
+    open fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
