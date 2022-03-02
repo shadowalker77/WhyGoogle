@@ -63,4 +63,12 @@ class RecyclerItemTouchHelper(
     override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
         return super.convertToAbsoluteDirection(flags, layoutDirection)
     }
+
+    override fun isLongPressDragEnabled(): Boolean {
+        return adapter.isLongPressDragEnabled()
+    }
+
+    override fun isItemViewSwipeEnabled(): Boolean {
+        return adapter.isItemViewSwipeEnabled()
+    }
 }
