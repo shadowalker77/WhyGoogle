@@ -18,6 +18,7 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
 
     var parentRv: RecyclerView? = null
     var itemTouchHelperCallback: RecyclerItemTouchHelper? = null
+    var itemTouchHelper: ItemTouchHelper? = null
 
     open val dragDirections = 0
     open val swipeDirections = 0
@@ -29,8 +30,10 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.parentRv = recyclerView
-        this.itemTouchHelperCallback = RecyclerItemTouchHelper(dragDirections, swipeDirections, this@BaseAdapter)
-        ItemTouchHelper(itemTouchHelperCallback!!).attachToRecyclerView(parentRv)
+        this.itemTouchHelperCallback =
+            RecyclerItemTouchHelper(dragDirections, swipeDirections, this@BaseAdapter)
+        this.itemTouchHelper =
+            ItemTouchHelper(itemTouchHelperCallback!!).also { it.attachToRecyclerView(parentRv) }
     }
 
     fun filterItems(condition: (T) -> Boolean) {
@@ -39,11 +42,11 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     }
 
     open fun isLongPressDragEnabled(): Boolean {
-        return false
+        return dragDirections != 0
     }
 
     open fun isItemViewSwipeEnabled(): Boolean {
-        return false
+        return swipeDirections != 0
     }
 
     open fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
