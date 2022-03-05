@@ -33,6 +33,15 @@ class RecyclerItemTouchHelper(
         actionState: Int, isCurrentlyActive: Boolean
     ) {
         val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
+            ?: return super.onChildDrawOver(
+                c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         getDefaultUIUtil().onDrawOver(
             c, recyclerView, foregroundView, dX, dY,
             actionState, isCurrentlyActive
@@ -40,7 +49,11 @@ class RecyclerItemTouchHelper(
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-        val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
+        val foregroundView =
+            viewHolder.itemView.findViewById<View>(R.id.foregroundRl) ?: return super.clearView(
+                recyclerView,
+                viewHolder
+            )
         getDefaultUIUtil().clearView(foregroundView)
     }
 
@@ -50,6 +63,15 @@ class RecyclerItemTouchHelper(
         actionState: Int, isCurrentlyActive: Boolean
     ) {
         val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
+            ?: return super.onChildDraw(
+                c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         getDefaultUIUtil().onDraw(
             c, recyclerView, foregroundView, dX, dY,
             actionState, isCurrentlyActive
