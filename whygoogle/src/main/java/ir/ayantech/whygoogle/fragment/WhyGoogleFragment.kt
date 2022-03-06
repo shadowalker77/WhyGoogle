@@ -64,7 +64,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
             _binding?.root?.setBackgroundResource(defaultBackground)
         }
         trying {
-            if (!this::mainBinding.isInitialized)
+            if (!this::mainBinding.isInitialized || recreateOnReturn)
                 mainBinding = bindingInflater.invoke(inflater, null, false)
             _binding!!.mainRl.addView(
                 mainBinding.root,
