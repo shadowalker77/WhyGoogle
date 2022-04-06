@@ -17,8 +17,11 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     RecyclerView.Adapter<ViewHolder>() {
 
     var parentRv: RecyclerView? = null
+
     var itemTouchHelperCallback: RecyclerItemTouchHelper? = null
     var itemTouchHelper: ItemTouchHelper? = null
+
+    val context = parentRv?.context
 
     open val dragDirections = 0
     open val swipeDirections = 0

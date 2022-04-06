@@ -1,5 +1,6 @@
 package ir.ayantech.whygoogle.helper
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
 import android.widget.Toast
+import androidx.core.app.ShareCompat
 import java.io.ByteArrayInputStream
 import java.net.URLDecoder
 
@@ -48,6 +50,23 @@ fun String.copyToClipBoard(context: Context) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("ReferralCode", this)
     clipboard.setPrimaryClip(clip)
+}
+
+fun String.share(activity: Activity) {
+    ShareCompat.IntentBuilder.from(activity)
+        .setText(this)
+        .setType("text/plain")
+        .setChooserTitle("به اشتراک گذاری از طریق:")
+        .startChooser()
+}
+
+fun String.openEmailAppSelectorWithEmailAddress(context: Context?) {
+    if (context == null) return
+    val intent = Intent(
+        Intent.ACTION_SENDTO,
+        Uri.fromParts("mailto", this, null)
+    )
+    context.startActivity(Intent.createChooser(intent, "انتخاب کنید"))
 }
 
 fun String.unify() =
