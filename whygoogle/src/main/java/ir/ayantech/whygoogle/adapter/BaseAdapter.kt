@@ -2,6 +2,7 @@ package ir.ayantech.whygoogle.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,12 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     var itemTouchHelperCallback: RecyclerItemTouchHelper? = null
     var itemTouchHelper: ItemTouchHelper? = null
 
-    val context = parentRv?.context
+    val attachedContext: Context
+        get() = try {
+            parentRv?.context!!
+        } catch (e: Exception) {
+            throw java.lang.Exception("you cannot use this variable here.")
+        }
 
     open val dragDirections = 0
     open val swipeDirections = 0

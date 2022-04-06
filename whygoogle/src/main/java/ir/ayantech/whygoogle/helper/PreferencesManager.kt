@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
-internal class PreferencesManager private constructor(context: Context) {
+class PreferencesManager private constructor(context: Context) {
 
     private var sharedPreferences: SharedPreferences? = null
 
@@ -66,31 +66,31 @@ internal class PreferencesManager private constructor(context: Context) {
         sharedPreferences?.edit()?.putFloat(fieldName, value!!)?.apply()
     }
 
-    private fun readStringFromSharedPreferences(field: String): String {
+    fun readStringFromSharedPreferences(field: String): String {
         return sharedPreferences?.getString(field, "") ?: ""
     }
 
-    private fun readBooleanFromSharedPreferences(field: String): Boolean {
-        return sharedPreferences?.getBoolean(field, false) ?: false
-    }
-
-    private fun readLongFromSharedPreferences(field: String): Long {
-        return sharedPreferences?.getLong(field, 0L) ?: 0L
-    }
-
-    private fun readIntFromSharedPreferences(field: String): Int {
-        return sharedPreferences?.getInt(field, 0) ?: 0
-    }
-
-    private fun readFloatFromSharedPreferences(field: String): Float {
-        return sharedPreferences?.getFloat(field, 0f) ?: 0f
-    }
-
-    fun <T> saveComplexList(field: String, items: List<T>) {
+    private fun <T> saveComplexList(field: String, items: List<T>) {
         saveToSharedPreferences(
             field,
             items.foldList()
         )
+    }
+
+    fun readBooleanFromSharedPreferences(field: String): Boolean {
+        return sharedPreferences?.getBoolean(field, false) ?: false
+    }
+
+    fun readLongFromSharedPreferences(field: String): Long {
+        return sharedPreferences?.getLong(field, 0L) ?: 0L
+    }
+
+    fun readIntFromSharedPreferences(field: String): Int {
+        return sharedPreferences?.getInt(field, 0) ?: 0
+    }
+
+    fun readFloatFromSharedPreferences(field: String): Float {
+        return sharedPreferences?.getFloat(field, 0f) ?: 0f
     }
 
     inline fun <reified T> getComplexList(
