@@ -63,7 +63,7 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
         return true
     }
 
-    open fun onSwiping(direction: Int, position: Int) {}
+    open fun onSwiping(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {}
 
     open fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
     }

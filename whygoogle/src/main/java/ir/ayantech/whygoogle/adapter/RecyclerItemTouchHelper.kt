@@ -37,15 +37,15 @@ class RecyclerItemTouchHelper(
         actionState: Int, isCurrentlyActive: Boolean
     ) {
         getForegroundLayout(viewHolder)
-        ?: return super.onChildDrawOver(
-            c,
-            recyclerView,
-            viewHolder,
-            dX,
-            dY,
-            actionState,
-            isCurrentlyActive
-        )
+            ?: return super.onChildDrawOver(
+                c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         getDefaultUIUtil().onDrawOver(
             c,
             recyclerView,
@@ -55,16 +55,20 @@ class RecyclerItemTouchHelper(
             actionState,
             isCurrentlyActive
         )
-        adapter.onSwiping(if (dX > 0) ItemTouchHelper.LEFT else ItemTouchHelper.RIGHT, viewHolder.adapterPosition)
+        adapter.onSwiping(
+            viewHolder,
+            if (dX > 0) ItemTouchHelper.LEFT else ItemTouchHelper.RIGHT,
+            viewHolder.adapterPosition
+        )
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         val foregroundView =
             getForegroundLayout(viewHolder)
-            ?: return super.clearView(
-                recyclerView,
-                viewHolder
-            )
+                ?: return super.clearView(
+                    recyclerView,
+                    viewHolder
+                )
         getDefaultUIUtil().clearView(foregroundView)
     }
 
@@ -74,15 +78,15 @@ class RecyclerItemTouchHelper(
         actionState: Int, isCurrentlyActive: Boolean
     ) {
         getForegroundLayout(viewHolder)
-        ?: return super.onChildDraw(
-            c,
-            recyclerView,
-            viewHolder,
-            dX,
-            dY,
-            actionState,
-            isCurrentlyActive
-        )
+            ?: return super.onChildDraw(
+                c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         getDefaultUIUtil().onDraw(
             c,
             recyclerView,
