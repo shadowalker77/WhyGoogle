@@ -47,6 +47,7 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
 
     fun filterItems(condition: (T) -> Boolean) {
         itemsToView = items.filter { condition(it) }
+        if (itemsToView.isEmpty()) itemsToView = items
         notifyDataSetChanged()
     }
 
@@ -61,6 +62,8 @@ abstract class BaseAdapter<T, ViewHolder : BaseViewHolder<T>>(
     open fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         return true
     }
+
+    open fun onSwiping(direction: Int, position: Int) {}
 
     open fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
     }

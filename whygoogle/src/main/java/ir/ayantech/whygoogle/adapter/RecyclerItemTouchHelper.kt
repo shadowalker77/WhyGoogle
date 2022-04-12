@@ -55,6 +55,7 @@ class RecyclerItemTouchHelper(
             actionState,
             isCurrentlyActive
         )
+        adapter.onSwiping(if (dX > 0) ItemTouchHelper.LEFT else ItemTouchHelper.RIGHT, viewHolder.adapterPosition)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
