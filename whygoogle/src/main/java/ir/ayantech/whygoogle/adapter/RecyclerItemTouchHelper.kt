@@ -11,6 +11,9 @@ class RecyclerItemTouchHelper(
     swipeDirs: Int,
     private val adapter: BaseAdapter<*, *>
 ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+
+    var foreground: View? = null
+
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -22,8 +25,7 @@ class RecyclerItemTouchHelper(
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (viewHolder != null) {
-            val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
-            getDefaultUIUtil().onSelected(foregroundView)
+            getDefaultUIUtil().onSelected(foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl))
         }
     }
 
@@ -32,7 +34,7 @@ class RecyclerItemTouchHelper(
         viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
         actionState: Int, isCurrentlyActive: Boolean
     ) {
-        val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
+        foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl)
             ?: return super.onChildDrawOver(
                 c,
                 recyclerView,
@@ -43,14 +45,14 @@ class RecyclerItemTouchHelper(
                 isCurrentlyActive
             )
         getDefaultUIUtil().onDrawOver(
-            c, recyclerView, foregroundView, dX, dY,
+            c, recyclerView, foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl), dX, dY,
             actionState, isCurrentlyActive
         )
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         val foregroundView =
-            viewHolder.itemView.findViewById<View>(R.id.foregroundRl) ?: return super.clearView(
+            foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl) ?: return super.clearView(
                 recyclerView,
                 viewHolder
             )
@@ -62,7 +64,7 @@ class RecyclerItemTouchHelper(
         viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
         actionState: Int, isCurrentlyActive: Boolean
     ) {
-        val foregroundView = viewHolder.itemView.findViewById<View>(R.id.foregroundRl)
+        foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl)
             ?: return super.onChildDraw(
                 c,
                 recyclerView,
@@ -73,7 +75,7 @@ class RecyclerItemTouchHelper(
                 isCurrentlyActive
             )
         getDefaultUIUtil().onDraw(
-            c, recyclerView, foregroundView, dX, dY,
+            c, recyclerView, foreground ?: viewHolder.itemView.findViewById(R.id.foregroundRl), dX, dY,
             actionState, isCurrentlyActive
         )
     }
