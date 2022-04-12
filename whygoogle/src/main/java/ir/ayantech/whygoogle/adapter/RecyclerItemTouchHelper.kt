@@ -57,7 +57,7 @@ class RecyclerItemTouchHelper(
         )
         adapter.onSwiping(
             viewHolder,
-            if (dX > 0) ItemTouchHelper.LEFT else ItemTouchHelper.RIGHT,
+            if (dX > 0) ItemTouchHelper.RIGHT else ItemTouchHelper.LEFT,
             viewHolder.adapterPosition
         )
     }
