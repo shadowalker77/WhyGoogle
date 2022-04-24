@@ -49,8 +49,8 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         if (popAll) popAll()
         supportFragmentManager.beginTransaction()
             .also { ft ->
-                fragment.getFragmentTransactionAnimation(this)
-                    ?: fragment.getFragmentTransactionAnimation()?.let {
+                (fragment.getFragmentTransactionAnimation(this)
+                    ?: fragment.getFragmentTransactionAnimation())?.let {
                         ft.setCustomAnimations(
                             it.fragmentEnter,
                             it.fragmentExit,
