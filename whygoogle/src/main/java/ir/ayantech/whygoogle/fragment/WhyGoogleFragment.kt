@@ -1,6 +1,7 @@
 package ir.ayantech.whygoogle.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -142,7 +143,14 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
 
     open fun onEnterAnimationEnded() {}
 
+    @Deprecated(
+        "Use the function with context passed to it",
+        ReplaceWith("getFragmentTransactionAnimation(context: Context)")
+    )
     open fun getFragmentTransactionAnimation(): WhyGoogleFragmentTransactionAnimation? = null
+
+    open fun getFragmentTransactionAnimation(context: Context): WhyGoogleFragmentTransactionAnimation? =
+        null
 
     fun accessViews(block: T.() -> Unit) {
         binding.apply {
