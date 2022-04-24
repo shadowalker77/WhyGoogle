@@ -48,15 +48,16 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         }
         if (popAll) popAll()
         supportFragmentManager.beginTransaction()
-            .also {
-                if (fragment.getFragmentTransactionAnimation() != null) {
-                    it.setCustomAnimations(
-                        fragment.getFragmentTransactionAnimation()!!.fragmentEnter,
-                        fragment.getFragmentTransactionAnimation()!!.fragmentExit,
-                        fragment.getFragmentTransactionAnimation()!!.fragmentPopEnter,
-                        fragment.getFragmentTransactionAnimation()!!.fragmentPopExit,
-                    )
-                }
+            .also { ft ->
+                fragment.getFragmentTransactionAnimation(this)
+                    ?: fragment.getFragmentTransactionAnimation()?.let {
+                        ft.setCustomAnimations(
+                            it.fragmentEnter,
+                            it.fragmentExit,
+                            it.fragmentPopEnter,
+                            it.fragmentPopExit,
+                        )
+                    }
             }
             .addOrReplace(
                 containerId,
