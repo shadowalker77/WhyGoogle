@@ -6,7 +6,8 @@ import android.widget.TextView
 
 fun TextView.setHtmlText(html: String?) {
     text = when {
-        html?.isHtml() == false -> html
+        html == null -> null
+        !html.isHtml() -> html
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> Html.fromHtml(
             html,
             Html.FROM_HTML_MODE_COMPACT
