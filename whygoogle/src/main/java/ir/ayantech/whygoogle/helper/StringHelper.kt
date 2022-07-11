@@ -1,20 +1,19 @@
 package ir.ayantech.whygoogle.helper
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.Intent.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.util.Base64
 import android.widget.Toast
 import androidx.core.app.ShareCompat
 import java.io.ByteArrayInputStream
 import java.net.URLDecoder
 
-fun String.openUrl(context: Context?, failed: SimpleCallBack? = null) {
+fun String.oldOpenUrl(context: Context?, failed: SimpleCallBack? = null) {
     if (context == null) return
     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(this))
     val activityInfo =
@@ -31,6 +30,37 @@ fun String.openUrl(context: Context?, failed: SimpleCallBack? = null) {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+}
+
+fun String.openUrl(context: Context?, failed: SimpleCallBack? = null) {
+    if (context == null) return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        try {
+            val flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_REQUIRE_NON_BROWSER
+            val browserIntent =
+                Intent(ACTION_VIEW, Uri.parse(this)).addCategory(CATEGORY_BROWSABLE).addFlags(flags)
+            context.startActivity(browserIntent)
+        } catch (e: ActivityNotFoundException) {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(this))
+            val activityInfo =
+                browserIntent.resolveActivityInfo(context.packageManager, browserIntent.flags)
+            if (activityInfo?.exported == true) {
+                context.startActivity(browserIntent)
+            } else {
+                if (failed != null)
+                    failed()
+                else {
+                    Toast.makeText(
+                        context,
+                        "امکان باز کردن لینک در دستگاه شما وجود ندارد.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    } else {
+        oldOpenUrl(context, failed)
     }
 }
 
