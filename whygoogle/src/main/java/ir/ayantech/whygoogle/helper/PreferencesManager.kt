@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
-class PreferencesManager private constructor(context: Context) {
+internal class PreferencesManager private constructor(context: Context) {
 
     private var sharedPreferences: SharedPreferences? = null
 
@@ -31,13 +31,28 @@ class PreferencesManager private constructor(context: Context) {
         }
     }
 
-    inline fun <reified T> read(fieldName: String, defaultValue: Any = 0): T {
+    inline fun <reified T> read(fieldName: String, defaultValue: T? = null): T {
         return when (T::class.java.toString()) {
-            "class java.lang.String" -> readStringFromSharedPreferences(fieldName) as T
-            "class java.lang.Boolean" -> readBooleanFromSharedPreferences(fieldName) as T
-            "class java.lang.Long" -> readLongFromSharedPreferences(fieldName) as T
-            "class java.lang.Integer" -> readIntFromSharedPreferences(fieldName) as T
-            "class java.lang.Float" -> readFloatFromSharedPreferences(fieldName) as T
+            "class java.lang.String" -> readStringFromSharedPreferences(
+                fieldName,
+                (defaultValue ?: "") as String
+            ) as T
+            "class java.lang.Boolean" -> readBooleanFromSharedPreferences(
+                fieldName,
+                (defaultValue ?: false) as Boolean
+            ) as T
+            "class java.lang.Long" -> readLongFromSharedPreferences(
+                fieldName,
+                (defaultValue ?: 0L) as Long
+            ) as T
+            "class java.lang.Integer" -> readIntFromSharedPreferences(
+                fieldName,
+                (defaultValue ?: 0) as Int
+            ) as T
+            "class java.lang.Float" -> readFloatFromSharedPreferences(
+                fieldName,
+                (defaultValue ?: 0f) as Float
+            ) as T
             else -> try {
                 defaultValue as T
             } catch (e: java.lang.Exception) {
@@ -66,31 +81,34 @@ class PreferencesManager private constructor(context: Context) {
         sharedPreferences?.edit()?.putFloat(fieldName, value!!)?.apply()
     }
 
-    fun readStringFromSharedPreferences(field: String): String {
-        return sharedPreferences?.getString(field, "") ?: ""
+    private fun readStringFromSharedPreferences(field: String, defaultValue: String = ""): String {
+        return sharedPreferences?.getString(field, defaultValue) ?: ""
     }
 
-    private fun <T> saveComplexList(field: String, items: List<T>) {
+    private fun readBooleanFromSharedPreferences(
+        field: String,
+        defaultValue: Boolean = false
+    ): Boolean {
+        return sharedPreferences?.getBoolean(field, defaultValue) ?: false
+    }
+
+    private fun readLongFromSharedPreferences(field: String, defaultValue: Long = 0L): Long {
+        return sharedPreferences?.getLong(field, defaultValue) ?: 0L
+    }
+
+    private fun readIntFromSharedPreferences(field: String, defaultValue: Int = 0): Int {
+        return sharedPreferences?.getInt(field, defaultValue) ?: 0
+    }
+
+    private fun readFloatFromSharedPreferences(field: String, defaultValue: Float = 0f): Float {
+        return sharedPreferences?.getFloat(field, defaultValue) ?: 0f
+    }
+
+    fun <T> saveComplexList(field: String, items: List<T>) {
         saveToSharedPreferences(
             field,
             items.foldList()
         )
-    }
-
-    fun readBooleanFromSharedPreferences(field: String): Boolean {
-        return sharedPreferences?.getBoolean(field, false) ?: false
-    }
-
-    fun readLongFromSharedPreferences(field: String): Long {
-        return sharedPreferences?.getLong(field, 0L) ?: 0L
-    }
-
-    fun readIntFromSharedPreferences(field: String): Int {
-        return sharedPreferences?.getInt(field, 0) ?: 0
-    }
-
-    fun readFloatFromSharedPreferences(field: String): Float {
-        return sharedPreferences?.getFloat(field, 0f) ?: 0f
     }
 
     inline fun <reified T> getComplexList(
