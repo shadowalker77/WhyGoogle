@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
-internal class PreferencesManager private constructor(context: Context) {
+class PreferencesManager private constructor(context: Context) {
 
     private var sharedPreferences: SharedPreferences? = null
 
@@ -81,26 +81,26 @@ internal class PreferencesManager private constructor(context: Context) {
         sharedPreferences?.edit()?.putFloat(fieldName, value!!)?.apply()
     }
 
-    private fun readStringFromSharedPreferences(field: String, defaultValue: String = ""): String {
+    fun readStringFromSharedPreferences(field: String, defaultValue: String = ""): String {
         return sharedPreferences?.getString(field, defaultValue) ?: ""
     }
 
-    private fun readBooleanFromSharedPreferences(
+    fun readBooleanFromSharedPreferences(
         field: String,
         defaultValue: Boolean = false
     ): Boolean {
         return sharedPreferences?.getBoolean(field, defaultValue) ?: false
     }
 
-    private fun readLongFromSharedPreferences(field: String, defaultValue: Long = 0L): Long {
+    fun readLongFromSharedPreferences(field: String, defaultValue: Long = 0L): Long {
         return sharedPreferences?.getLong(field, defaultValue) ?: 0L
     }
 
-    private fun readIntFromSharedPreferences(field: String, defaultValue: Int = 0): Int {
+    fun readIntFromSharedPreferences(field: String, defaultValue: Int = 0): Int {
         return sharedPreferences?.getInt(field, defaultValue) ?: 0
     }
 
-    private fun readFloatFromSharedPreferences(field: String, defaultValue: Float = 0f): Float {
+    fun readFloatFromSharedPreferences(field: String, defaultValue: Float = 0f): Float {
         return sharedPreferences?.getFloat(field, defaultValue) ?: 0f
     }
 
