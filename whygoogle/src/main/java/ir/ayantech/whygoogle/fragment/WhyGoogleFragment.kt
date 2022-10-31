@@ -90,7 +90,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
                     headerBinding!!.root,
                     RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
                     )
                 )
             if (footerInflater != null)
@@ -98,7 +98,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
                     footerBinding!!.root,
                     RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
                     )
                 )
         }
