@@ -65,8 +65,19 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
             _binding?.root?.setBackgroundResource(defaultBackground)
         }
         trying {
-            if (!this::mainBinding.isInitialized || recreateOnReturn)
+            if (!this::mainBinding.isInitialized || recreateOnReturn) {
                 mainBinding = bindingInflater.invoke(inflater, null, false)
+                headerInflater?.let {
+                    trying {
+                        headerBinding = it.invoke(inflater, _binding!!.headerRl, false)
+                    }
+                }
+                footerInflater?.let {
+                    trying {
+                        footerBinding = it.invoke(inflater, _binding!!.footerRl, false)
+                    }
+                }
+            }
             _binding!!.mainRl.addView(
                 mainBinding.root,
                 RelativeLayout.LayoutParams(
@@ -74,16 +85,22 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
                     RelativeLayout.LayoutParams.MATCH_PARENT
                 )
             )
-        }
-        headerInflater?.let {
-            trying {
-                headerBinding = it.invoke(inflater, _binding!!.headerRl, true)
-            }
-        }
-        footerInflater?.let {
-            trying {
-                footerBinding = it.invoke(inflater, _binding!!.footerRl, true)
-            }
+            if (headerInflater != null)
+                _binding!!.headerRl.addView(
+                    headerBinding!!.root,
+                    RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
+            if (footerInflater != null)
+                _binding!!.footerRl.addView(
+                    footerBinding!!.root,
+                    RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
         }
         _binding?.dummyToLock?.setOnTouchListener { v, event ->
             _isUILocked
