@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
+import ir.ayantech.whygoogle.dateTime.DateTime
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 
 class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
@@ -25,6 +26,8 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
 
                 override fun createFragment(position: Int): Fragment = SimpleFragment()
             }
+            val dt = DateTime("2022-09-24T15:34:00")
+            Log.d("dtt", dt.toString())
         }
     }
 
