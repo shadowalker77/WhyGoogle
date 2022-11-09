@@ -143,31 +143,31 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         if ((getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll))
             return
         transactions.add {
-                fragment.asyncInflate { fragment ->
-                    fragmentStack.add(fragment)
-                    val position = getFragmentCount() - 1
-                    whyGoogleFragmentAdapter.notifyItemInserted(position)
-                    (fragment.mainBinding.root as? ViewGroup)?.let {
-                        it.viewTreeObserver.addOnGlobalLayoutListener(object :
-                            ViewTreeObserver.OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                if (popAll) {
-                                    fragmentHost.setCurrentItem(position, false)
-                                    fragmentStack.removeAll { it != fragment }
-                                    whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
-                                    transactioning = false
-                                } else {
-                                    fragmentHost.setCurrentItem(
-                                        position,
-                                        TRANSFORM_DURATION,
-                                        onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
-                                    )
-                                }
-                                it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            fragment.asyncInflate { fragment ->
+                fragmentStack.add(fragment)
+                val position = getFragmentCount() - 1
+                whyGoogleFragmentAdapter.notifyItemInserted(position)
+                (fragment.mainBinding.root as? ViewGroup)?.let {
+                    it.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            if (popAll) {
+                                fragmentHost.setCurrentItem(position, false)
+                                fragmentStack.removeAll { it != fragment }
+                                whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+                                transactioning = false
+                            } else {
+                                fragmentHost.setCurrentItem(
+                                    position,
+                                    TRANSFORM_DURATION,
+                                    onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                                )
                             }
-                        })
-                    }
+                            it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        }
+                    })
                 }
+            }
         }
         executeLastTransaction()
     }

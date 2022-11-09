@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.makeGone
+import ir.ayantech.whygoogle.standard.LaunchMode
 
 class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
 
@@ -12,7 +13,7 @@ class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
         super.onCreate()
         binding.go2.makeGone()
         binding.go.setOnClickListener {
-            startWithPop(MainFragment())
+            start(MainFragment(), popAll = true, stack = false, LaunchMode.NORMAL)
         }
     }
 

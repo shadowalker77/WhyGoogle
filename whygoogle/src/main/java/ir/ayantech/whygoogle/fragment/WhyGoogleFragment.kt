@@ -28,7 +28,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
         System.currentTimeMillis()
     }
 
-    private var _binding: WhyGoogleFragmentContainerBinding? = null
+    var whyGoogleFragmentContainerBinding: WhyGoogleFragmentContainerBinding? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> T
 
@@ -56,57 +56,48 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (_binding != null && !recreateOnReturn)
-            return requireNotNull(_binding).root.also {
+        if (whyGoogleFragmentContainerBinding != null && !recreateOnReturn)
+            return requireNotNull(whyGoogleFragmentContainerBinding).root.also {
                 onFragmentVisible()
             }
-        _binding = WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
+        whyGoogleFragmentContainerBinding =
+            WhyGoogleFragmentContainerBinding.inflate(layoutInflater, container, false)
         if (defaultBackground != 0) {
-            _binding?.root?.setBackgroundResource(defaultBackground)
+            whyGoogleFragmentContainerBinding?.root?.setBackgroundResource(defaultBackground)
         }
         trying {
             if (!this::mainBinding.isInitialized || recreateOnReturn) {
                 mainBinding = bindingInflater.invoke(inflater, null, false)
-                headerInflater?.let {
-                    trying {
-                        headerBinding = it.invoke(inflater, _binding!!.headerRl, false)
-                    }
-                }
-                footerInflater?.let {
-                    trying {
-                        footerBinding = it.invoke(inflater, _binding!!.footerRl, false)
-                    }
-                }
             }
-            _binding!!.mainRl.addView(
-                mainBinding.root,
-                RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT
+            headerBinding =
+                headerInflater?.invoke(
+                    inflater,
+                    whyGoogleFragmentContainerBinding?.headerRl,
+                    false
                 )
-            )
-            if (headerInflater != null)
-                _binding!!.headerRl.addView(
-                    headerBinding!!.root,
+            footerBinding =
+                footerInflater?.invoke(
+                    inflater,
+                    whyGoogleFragmentContainerBinding?.footerRl,
+                    false
+                )
+            whyGoogleFragmentContainerBinding?.let { b ->
+                b.mainRl.addView(
+                    mainBinding.root,
                     RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                        RelativeLayout.LayoutParams.MATCH_PARENT
                     )
                 )
-            if (footerInflater != null)
-                _binding!!.footerRl.addView(
-                    footerBinding!!.root,
-                    RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
-                    )
-                )
+                headerBinding?.root?.let { b.headerRl.addView(it) }
+                footerBinding?.root?.let { b.footerRl.addView(it) }
+            }
         }
-        _binding?.dummyToLock?.setOnTouchListener { v, event ->
+        whyGoogleFragmentContainerBinding?.dummyToLock?.setOnTouchListener { v, event ->
             _isUILocked
         }
-        return requireNotNull(_binding).root.also {
-            _binding?.root?.let { preShowProcess(it) }
+        return requireNotNull(whyGoogleFragmentContainerBinding).root.also {
+            whyGoogleFragmentContainerBinding?.root?.let { preShowProcess(it) }
             onCreate()
             (activity as? WhyGoogleInterface)?.onTopFragmentChanged(this)
             onFragmentVisible()
@@ -127,7 +118,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
     override fun onDestroy() {
         super.onDestroy()
         trying { mainBinding.root.detachFromParent() }
-        _binding = null
+        whyGoogleFragmentContainerBinding = null
     }
 
     open fun onCreate() {}

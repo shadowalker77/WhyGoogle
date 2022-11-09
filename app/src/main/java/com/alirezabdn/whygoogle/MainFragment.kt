@@ -6,8 +6,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
+import ir.ayantech.whygoogle.databinding.FooterBinding
 import ir.ayantech.whygoogle.dateTime.DateTime
+import ir.ayantech.whygoogle.fragment.ViewBindingInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.standard.LaunchMode
 
 class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
 
@@ -19,7 +22,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 start(MainFragment())
             }
             go2.setOnClickListener {
-                start(SecondFragment())
+                start(SecondFragment(), popAll = true, stack = false, LaunchMode.NORMAL)
             }
             binding.myVp2.adapter = object : FragmentStateAdapter(this@MainFragment) {
                 override fun getItemCount(): Int = 4
@@ -30,6 +33,9 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
             Log.d("dtt", dt.toString())
         }
     }
+
+    override val footerInflater: ViewBindingInflater
+        get() = FooterBinding::inflate
 
     override val defaultBackground: Int
         get() = R.color.teal_700
