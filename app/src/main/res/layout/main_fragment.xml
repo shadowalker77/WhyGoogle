@@ -28,6 +28,13 @@
         android:text="go2"
         app:layout_constraintTop_toBottomOf="@+id/testTv" />
 
+    <Button
+        android:id="@+id/executeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:text="Execute" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/myVp2"
         android:layout_width="match_parent"

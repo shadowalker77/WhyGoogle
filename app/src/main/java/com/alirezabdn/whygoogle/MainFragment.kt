@@ -10,6 +10,7 @@ import ir.ayantech.whygoogle.databinding.FooterBinding
 import ir.ayantech.whygoogle.dateTime.DateTime
 import ir.ayantech.whygoogle.fragment.ViewBindingInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.PreferencesManager
 import ir.ayantech.whygoogle.standard.LaunchMode
 
 class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
@@ -28,6 +29,21 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 override fun getItemCount(): Int = 4
 
                 override fun createFragment(position: Int): Fragment = SimpleFragment()
+            }
+            binding.executeBtn.setOnClickListener {
+                PreferencesManager.getInstance(requireContext()).apply {
+                    val string = read<String>("string")
+                    val boolean = read<Boolean>("boolean")
+                    val float = read<Float>("float")
+                    val int = read<Int>("int")
+                    val long = read<Long>("long")
+
+//                    oldSave("string", "string")
+//                    oldSave("boolean", true)
+//                    oldSave("float", 0.2f)
+//                    oldSave("int", 12)
+//                    oldSave("long", 155L)
+                }
             }
             val dt = DateTime("2022-09-24T15:34:00")
             Log.d("dtt", dt.toString())
