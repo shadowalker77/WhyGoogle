@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
 import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
+import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
 import ir.ayantech.whygoogle.helper.SimpleCallBack
@@ -39,10 +40,12 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             fragmentHost.offscreenPageLimit = 3
             fragmentHost.rotation = 180f
             fragmentHost.changeToNeedsOfWhyGoogle()
-            fragmentHost.setPageTransformer(IOSPageTransition())
+            fragmentHost.setPageTransformer(pageTransformer)
             fragmentHost.adapter = it
         }
     }
+
+    open val pageTransformer: NonFinalViewPager2.PageTransformer = IOSPageTransition()
 
     private var lastKnownFragment: WhyGoogleFragment<*>? = null
 
@@ -138,6 +141,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         popAll: Boolean,
         stack: Boolean,
         launchMode: LaunchMode,
+        smoothScrollOnPopAll: Boolean,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
         if ((getFragmentCount() == 1 && fragment.javaClass == getTopFragment()?.javaClass && popAll))
@@ -152,7 +156,7 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                         ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             if (popAll) {
-                                fragmentHost.setCurrentItem(position, false)
+                                fragmentHost.setCurrentItem(position, smoothScrollOnPopAll)
                                 fragmentStack.removeAll { it != fragment }
                                 whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
                                 transactioning = false

@@ -9,7 +9,7 @@ interface WhyGoogleInterface {
         fragment: WhyGoogleFragment<*>,
         onFragmentCreationEndedCallback: SimpleCallBack? = null
     ) {
-        start(fragment, false, true, LaunchMode.NORMAL, onFragmentCreationEndedCallback)
+        start(fragment, false, true, LaunchMode.NORMAL, false, onFragmentCreationEndedCallback)
     }
 
     fun start(
@@ -17,6 +17,7 @@ interface WhyGoogleInterface {
         popAll: Boolean = false,
         stack: Boolean = true,
         launchMode: LaunchMode,
+        smoothScrollOnPopAll: Boolean = false,
         onFragmentCreationEndedCallback: SimpleCallBack? = null
     )
 

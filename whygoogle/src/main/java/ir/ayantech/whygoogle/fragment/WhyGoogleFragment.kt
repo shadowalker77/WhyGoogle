@@ -183,6 +183,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
         popAll: Boolean,
         stack: Boolean,
         launchMode: LaunchMode,
+        smoothScrollOnPopAll: Boolean,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
         (activity as? WhyGoogleInterface)?.start(
@@ -190,6 +191,7 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
             popAll,
             stack,
             launchMode,
+            smoothScrollOnPopAll,
             onFragmentCreationEndedCallback
         )
     }

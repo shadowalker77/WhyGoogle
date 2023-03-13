@@ -37,6 +37,7 @@ abstract class WhyGoogleActivity<T : ViewBinding> : AppCompatActivity(), WhyGoog
         popAll: Boolean,
         stack: Boolean,
         launchMode: LaunchMode,
+        smoothScrollOnPopAll: Boolean,
         onFragmentCreationEndedCallback: SimpleCallBack?
     ) {
         if (!stack) {

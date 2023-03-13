@@ -163,7 +163,7 @@ class PreferencesManager private constructor(context: Context) {
         convertOldValues<String>(field)
         return if (field.startsWith("enc")) sharedPreferences?.getString(
             field,
-            defaultValue
+            defaultValue.encryptAES(field)
         )?.decryptAES(field) ?: ""
         else sharedPreferences?.getString(field, defaultValue) ?: ""
     }
@@ -175,7 +175,7 @@ class PreferencesManager private constructor(context: Context) {
         convertOldValues<Boolean>(field)
         return if (field.startsWith("enc")) sharedPreferences?.getString(
             field,
-            defaultValue.toString()
+            defaultValue.toString().encryptAES(field)
         )?.decryptAES(field)
             .toBoolean()
         else
@@ -186,7 +186,7 @@ class PreferencesManager private constructor(context: Context) {
         convertOldValues<Long>(field)
         return if (field.startsWith("enc")) sharedPreferences?.getString(
             field,
-            defaultValue.toString()
+            defaultValue.toString().encryptAES(field)
         )?.decryptAES(field)
             ?.toLong() ?: 0L
         else
@@ -197,7 +197,7 @@ class PreferencesManager private constructor(context: Context) {
         convertOldValues<Int>(field)
         return if (field.startsWith("enc")) sharedPreferences?.getString(
             field,
-            defaultValue.toString()
+            defaultValue.toString().encryptAES(field)
         )?.decryptAES(field)
             ?.toInt() ?: 0
         else sharedPreferences?.getInt(field, defaultValue) ?: 0
@@ -207,7 +207,7 @@ class PreferencesManager private constructor(context: Context) {
         convertOldValues<Float>(field)
         return if (field.startsWith("enc")) sharedPreferences?.getString(
             field,
-            defaultValue.toString()
+            defaultValue.toString().encryptAES(field)
         )?.decryptAES(field)
             ?.toFloat() ?: 0f
         else sharedPreferences?.getFloat(field, defaultValue) ?: 0f
