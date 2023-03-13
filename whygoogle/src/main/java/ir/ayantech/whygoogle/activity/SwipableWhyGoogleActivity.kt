@@ -156,7 +156,15 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                         ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             if (popAll) {
-                                fragmentHost.setCurrentItem(position, smoothScrollOnPopAll)
+                                if (smoothScrollOnPopAll) {
+                                    fragmentHost.setCurrentItem(
+                                        position,
+                                        TRANSFORM_DURATION,
+                                        onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                                    )
+                                } else {
+                                    fragmentHost.setCurrentItem(position, false)
+                                }
                                 fragmentStack.removeAll { it != fragment }
                                 whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
                                 transactioning = false
