@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import com.alirezabdn.whygoogle.databinding.ActivityMainBinding
 import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.widget.DirectionCareSwipeBackContainer
+import ir.ayantech.whygoogle.widget.RtlSwipeBackContainer
 import ir.ayantech.whygoogle.widget.SwipeBackContainer
 
 class MainActivity : SwipableWhyGoogleActivity<ActivityMainBinding>() {

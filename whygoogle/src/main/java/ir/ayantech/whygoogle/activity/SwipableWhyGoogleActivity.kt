@@ -35,10 +35,13 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     val fragmentStack = ArrayList<WhyGoogleFragment<*>>()
 
+    open val forceRtl = false
+
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
-        WhyGoogleFragmentAdapter(this).also {
+        WhyGoogleFragmentAdapter(this, forceRtl).also {
             fragmentHost.offscreenPageLimit = 3
-            fragmentHost.rotation = 180f
+            if (forceRtl)
+                fragmentHost.rotation = 180f
             fragmentHost.changeToNeedsOfWhyGoogle()
             fragmentHost.setPageTransformer(pageTransformer)
             fragmentHost.adapter = it
@@ -81,7 +84,10 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    internal class WhyGoogleFragmentAdapter(val fragmentActivity: SwipableWhyGoogleActivity<*>) :
+    internal class WhyGoogleFragmentAdapter(
+        val fragmentActivity: SwipableWhyGoogleActivity<*>,
+        val forceRtl: Boolean
+    ) :
         FragmentStateAdapter(fragmentActivity) {
 
         override fun getItemCount(): Int = fragmentActivity.getFragmentCount()
@@ -95,7 +101,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
             payloads: MutableList<Any>
         ) {
             super.onBindViewHolder(holder, position, payloads)
-            holder.itemView.rotation = 180f
+            if (forceRtl)
+                holder.itemView.rotation = 180f
         }
 
         override fun getItemId(position: Int): Long {
@@ -158,8 +165,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                             if (popAll) {
                                 if (smoothScrollOnPopAll) {
                                     fragmentHost.setCurrentItem(
-                                        position,
-                                        TRANSFORM_DURATION,
+                                        item = position,
+                                        duration = TRANSFORM_DURATION,
                                         onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
                                     )
                                 } else {
