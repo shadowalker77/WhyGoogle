@@ -50,7 +50,7 @@ abstract class ExpandableItemAdapter<T, RowLayout : ViewBinding>(
                     holder.itemView.id,
                     holder.adapterPosition
                 )
-                (it as ViewGroup).delayedTransition()
+                (parent as? ViewGroup)?.delayedTransition()
                 lastExpandedPosition =
                     if (lastExpandedPosition == holder.adapterPosition && canCollapseAll) -1 else {
                         notifyItemChanged(lastExpandedPosition)
