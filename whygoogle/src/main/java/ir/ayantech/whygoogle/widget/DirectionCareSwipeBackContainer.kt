@@ -120,7 +120,7 @@ class DirectionCareSwipeBackContainer(context: Context, attrs: AttributeSet? = n
         onFragmentCreationEndedCallback: SimpleCallBack?// = null
     ) {
         val pxToDrag: Int = pagePxWidth * (item - currentItem)
-        val animator = ValueAnimator.ofInt(0, pxToDrag)
+        val animator = ValueAnimator.ofInt(0, (if(isRtl) -1 else 1) * pxToDrag)
         var previousValue = 0
         animator.addUpdateListener { valueAnimator ->
             val currentValue = valueAnimator.animatedValue as Int

@@ -3,6 +3,7 @@ package ir.ayantech.whygoogle.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,8 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     open val forceRtl = false
 
+    open val directionCareRtl = false
+
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this, forceRtl).also {
             fragmentHost.offscreenPageLimit = 3
@@ -48,13 +51,16 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         }
     }
 
-    open val pageTransformer: NonFinalViewPager2.PageTransformer = IOSPageTransition()
+    open val pageTransformer: NonFinalViewPager2.PageTransformer = IOSPageTransition(directionCareRtl)
 
     private var lastKnownFragment: WhyGoogleFragment<*>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        if (directionCareRtl) {
+            window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        }
         fragmentHost.onPageSettled {
             val previousCount = getFragmentCount()
             while (fragmentHost.currentItem <= getFragmentCount() - 2) {
