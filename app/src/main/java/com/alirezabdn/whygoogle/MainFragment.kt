@@ -1,5 +1,6 @@
 package com.alirezabdn.whygoogle
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -23,7 +24,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 start(MainFragment())
             }
             go2.setOnClickListener {
-                start(SecondFragment(), popAll = true, stack = false, LaunchMode.NORMAL, false)
+                start(SecondFragment())
             }
             binding.myVp2.adapter = object : FragmentStateAdapter(this@MainFragment) {
                 override fun getItemCount(): Int = 4
@@ -45,9 +46,14 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
 //                    oldSave("long", 155L)
                 }
             }
-            val dt = DateTime("2022-09-24T15:34:00")
-            Log.d("dtt", dt.toString())
+//            val dt = DateTime("2022-09-24T15:34:00")
+//            Log.d("dtt", dt.toString())
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("dtt", "ANGSAVED")
     }
 
     override val footerInflater: ViewBindingInflater

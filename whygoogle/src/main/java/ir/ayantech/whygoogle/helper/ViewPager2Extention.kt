@@ -1,22 +1,16 @@
 package ir.ayantech.whygoogle.helper
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 
-fun NonFinalViewPager2.changeToNeedsOfWhyGoogle() {
-    this.getChildAt(0).let { rv ->
-        (rv as? RecyclerView)?.changeSnapSpeed()
-        rv.overScrollMode = View.OVER_SCROLL_NEVER
-    }
-}
+fun NonFinalViewPager2.getRecyclerView() = this.getChildAt(0) as RecyclerView
 
-fun RecyclerView.changeSnapSpeed() {
+fun RecyclerView.changeSnapSpeed(speed: Int) {
     try {
         this::class.java.superclass.getDeclaredField("mMinFlingVelocity").let {
             it.isAccessible = true
             val value = (it.get(this) as? Int)
-            it.set(this, value!! * 10)
+            it.set(this, speed)
         }
     } catch (e: Exception) {
         e.printStackTrace()

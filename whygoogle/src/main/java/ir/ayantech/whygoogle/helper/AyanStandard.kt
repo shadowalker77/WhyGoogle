@@ -65,6 +65,8 @@ typealias LongCallBack = (Long) -> Unit
 
 typealias IntCallBack = (Int) -> Unit
 
+typealias FloatCallBack = (Float) -> Unit
+
 public fun allNonNull(vararg items: Any?, block: () -> Unit) {
     items.forEach {
         if (it == null) return

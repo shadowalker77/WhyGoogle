@@ -2,23 +2,17 @@ package ir.ayantech.whygoogle.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.alirezabdn.whyfinal.adapter.FragmentStateAdapter
-import com.alirezabdn.whyfinal.adapter.FragmentViewHolder
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
 import ir.ayantech.whygoogle.custom.AsyncLayoutInflater
+import ir.ayantech.whygoogle.custom.MyFragmentStateAdapter
+import ir.ayantech.whygoogle.custom.MyFragmentViewHolder
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
-import ir.ayantech.whygoogle.helper.SimpleCallBack
-import ir.ayantech.whygoogle.helper.changeToNeedsOfWhyGoogle
-import ir.ayantech.whygoogle.helper.trying
-import ir.ayantech.whygoogle.helper.viewBinding
+import ir.ayantech.whygoogle.helper.*
 import ir.ayantech.whygoogle.standard.IOSPageTransition
 import ir.ayantech.whygoogle.standard.LaunchMode
 import ir.ayantech.whygoogle.standard.WhyGoogleInterface
@@ -40,18 +34,27 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
 
     open val directionCareRtl = false
 
+    private var defaultFling: Int = 100
+
     private val whyGoogleFragmentAdapter: WhyGoogleFragmentAdapter by lazy {
         WhyGoogleFragmentAdapter(this, forceRtl).also {
             fragmentHost.offscreenPageLimit = 3
             if (forceRtl)
                 fragmentHost.rotation = 180f
-            fragmentHost.changeToNeedsOfWhyGoogle()
+            fragmentHost.getRecyclerView()::class.java.superclass.getDeclaredField("mMinFlingVelocity")
+                .let {
+                    it.isAccessible = true
+                    defaultFling = ((it.get(fragmentHost.getRecyclerView()) as? Int) ?: 88) * 30
+                }
+            fragmentHost.getRecyclerView().overScrollMode = View.OVER_SCROLL_NEVER
+            fragmentHost.getRecyclerView().changeSnapSpeed(defaultFling)
             fragmentHost.setPageTransformer(pageTransformer)
             fragmentHost.adapter = it
         }
     }
 
-    open val pageTransformer: NonFinalViewPager2.PageTransformer = IOSPageTransition(directionCareRtl)
+    open val pageTransformer: NonFinalViewPager2.PageTransformer =
+        IOSPageTransition(directionCareRtl)
 
     private var lastKnownFragment: WhyGoogleFragment<*>? = null
 
@@ -61,27 +64,35 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         if (directionCareRtl) {
             window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         }
-        fragmentHost.onPageSettled {
-            val previousCount = getFragmentCount()
-            while (fragmentHost.currentItem <= getFragmentCount() - 2) {
-                fragmentStack.removeLast()
-            }
-            if (previousCount >= fragmentHost.currentItem + 2) {
-                whyGoogleFragmentAdapter.notifyItemRangeRemoved(
-                    fragmentHost.currentItem + 1,
-                    previousCount - fragmentHost.currentItem - 1
-                )
-                fragmentStack.lastOrNull()?.onFragmentVisible()
-                fragmentStack.lastOrNull()?.onBackToFragment()
-                onTopFragmentChanged(fragmentStack.last())
-            }
-            if (lastKnownFragment != fragmentStack.lastOrNull()) {
-                fragmentStack.lastOrNull()?.onEnterAnimationEnded()
-                lastKnownFragment = fragmentStack.lastOrNull()
-            }
-            transactioning = false
-            executeLastTransaction()
-        }
+        fragmentHost.listener(
+            onPageSettled = {
+                val previousCount = getFragmentCount()
+                if (fragmentHost.currentItem <= getFragmentCount() - 2 && getTopFragment()?.preventFromPop == true) {
+                    fragmentHost.setCurrentItem(getFragmentCount() - 1, true)
+                    getTopFragment()?.onBackPressed()
+                    return@listener
+                }
+                while (fragmentHost.currentItem <= getFragmentCount() - 2) {
+                    fragmentStack.removeLast()
+                }
+                if (previousCount >= fragmentHost.currentItem + 2) {
+                    whyGoogleFragmentAdapter.notifyItemRangeRemoved(
+                        fragmentHost.currentItem + 1,
+                        previousCount - fragmentHost.currentItem - 1
+                    )
+                    fragmentStack.lastOrNull()?.onFragmentVisible()
+                    fragmentStack.lastOrNull()?.onBackToFragment()
+                    onTopFragmentChanged(fragmentStack.last())
+                }
+                if (lastKnownFragment != fragmentStack.lastOrNull()) {
+                    fragmentStack.lastOrNull()?.onEnterAnimationEnded()
+                    lastKnownFragment = fragmentStack.lastOrNull()
+                }
+                transactioning = false
+                executeLastTransaction()
+            },
+            onPageScrolled = {}
+        )
     }
 
     fun accessViews(block: T.() -> Unit) {
@@ -94,19 +105,19 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         val fragmentActivity: SwipableWhyGoogleActivity<*>,
         val forceRtl: Boolean
     ) :
-        FragmentStateAdapter(fragmentActivity) {
-
+        MyFragmentStateAdapter(fragmentActivity) {
         override fun getItemCount(): Int = fragmentActivity.getFragmentCount()
 
         override fun createFragment(position: Int): Fragment =
             fragmentActivity.fragmentStack[position]
 
         override fun onBindViewHolder(
-            holder: FragmentViewHolder,
+            holder: MyFragmentViewHolder,
             position: Int,
             payloads: MutableList<Any>
         ) {
             super.onBindViewHolder(holder, position, payloads)
+            holder.setIsRecyclable(false)
             if (forceRtl)
                 holder.itemView.rotation = 180f
         }
