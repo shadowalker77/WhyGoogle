@@ -226,4 +226,6 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
     open fun onBackToFragment() {}
 
     open var preventFromPop = false
+
+    open var lockedSwipe = false
 }
