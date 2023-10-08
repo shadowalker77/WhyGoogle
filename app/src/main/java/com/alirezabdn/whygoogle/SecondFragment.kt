@@ -20,7 +20,7 @@ class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
         }
     }
 
-    override var preventFromPop: Boolean = true
+    override var lockedSwipe: Boolean = true
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> MainFragmentBinding
         get() = MainFragmentBinding::inflate

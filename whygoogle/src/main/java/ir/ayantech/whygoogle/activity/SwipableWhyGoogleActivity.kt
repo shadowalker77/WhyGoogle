@@ -263,7 +263,6 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
     }
 
     override fun onTopFragmentChanged(whyGoogleFragment: WhyGoogleFragment<*>) {
-        fragmentHost.isUserInputEnabled = !whyGoogleFragment.lockedSwipe
     }
 
     override fun getTopFragment(): WhyGoogleFragment<*>? =

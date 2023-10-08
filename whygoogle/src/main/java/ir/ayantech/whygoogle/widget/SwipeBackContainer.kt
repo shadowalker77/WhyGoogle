@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.alirezabdn.whyfinal.widget.NonFinalViewPager2
+import ir.ayantech.whygoogle.activity.SwipableWhyGoogleActivity
 import ir.ayantech.whygoogle.helper.FloatCallBack
 import ir.ayantech.whygoogle.helper.SimpleCallBack
 
@@ -15,6 +16,11 @@ abstract class SwipeBackContainer @JvmOverloads constructor(
 ) : NonFinalViewPager2(context, attrs) {
     abstract fun onPageSettled(callback: SimpleCallBack)
 
+    override fun isUserInputEnabled(): Boolean {
+        if ((this.adapter as? SwipableWhyGoogleActivity.WhyGoogleFragmentAdapter)?.fragmentActivity?.getTopFragment()?.lockedSwipe == true)
+            return false
+        return super.isUserInputEnabled()
+    }
     fun listener(
         onPageSettled: SimpleCallBack,
         onPageScrolled: FloatCallBack
