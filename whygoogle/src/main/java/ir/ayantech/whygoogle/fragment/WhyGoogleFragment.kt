@@ -28,6 +28,8 @@ abstract class WhyGoogleFragment<T : ViewBinding> : Fragment(), WhyGoogleInterfa
         System.currentTimeMillis()
     }
 
+    fun isMainBindingInitialized() = this::mainBinding.isInitialized
+
     var whyGoogleFragmentContainerBinding: WhyGoogleFragmentContainerBinding? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> T

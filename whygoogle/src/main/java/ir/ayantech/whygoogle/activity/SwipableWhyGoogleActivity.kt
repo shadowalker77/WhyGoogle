@@ -176,29 +176,36 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
                 val position = getFragmentCount() - 1
                 whyGoogleFragmentAdapter.notifyItemInserted(position)
                 (fragment.mainBinding.root as? ViewGroup)?.let {
+                    val viewReady: () -> Unit = {
+                        if (popAll) {
+                            if (smoothScrollOnPopAll) {
+                                fragmentHost.setCurrentItem(
+                                    item = position,
+                                    duration = TRANSFORM_DURATION,
+                                    onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                                )
+                            } else {
+                                fragmentHost.setCurrentItem(position, false)
+                            }
+                            fragmentStack.removeAll { it != fragment }
+                            whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
+                            transactioning = false
+                        } else {
+                            fragmentHost.setCurrentItem(
+                                position,
+                                TRANSFORM_DURATION,
+                                onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
+                            )
+                        }
+                    }
+                    if (fragment.isMainBindingInitialized()) {
+                        viewReady()
+                        return@let
+                    }
                     it.viewTreeObserver.addOnGlobalLayoutListener(object :
                         ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
-                            if (popAll) {
-                                if (smoothScrollOnPopAll) {
-                                    fragmentHost.setCurrentItem(
-                                        item = position,
-                                        duration = TRANSFORM_DURATION,
-                                        onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
-                                    )
-                                } else {
-                                    fragmentHost.setCurrentItem(position, false)
-                                }
-                                fragmentStack.removeAll { it != fragment }
-                                whyGoogleFragmentAdapter.notifyItemRangeRemoved(0, position)
-                                transactioning = false
-                            } else {
-                                fragmentHost.setCurrentItem(
-                                    position,
-                                    TRANSFORM_DURATION,
-                                    onFragmentCreationEndedCallback = onFragmentCreationEndedCallback
-                                )
-                            }
+                            viewReady()
                             it.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         }
                     })
