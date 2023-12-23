@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.alirezabdn.whygoogle.databinding.MainFragmentBinding
 import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
+import ir.ayantech.whygoogle.helper.fragmentArgument
 import ir.ayantech.whygoogle.helper.makeGone
-import ir.ayantech.whygoogle.standard.LaunchMode
 
 class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
+
+    var name: String? by fragmentArgument()
     override fun onCreate() {
         super.onCreate()
         binding.go2.makeGone()
@@ -18,6 +20,7 @@ class SecondFragment : WhyGoogleFragment<MainFragmentBinding>() {
         binding.executeBtn.setOnClickListener {
             preventFromPop = false
         }
+        binding.executeBtn.text = name
     }
 
     override var lockedSwipe: Boolean = true

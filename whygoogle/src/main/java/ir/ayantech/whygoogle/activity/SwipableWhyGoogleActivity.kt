@@ -66,33 +66,33 @@ abstract class SwipableWhyGoogleActivity<T : ViewBinding> : AppCompatActivity(),
         if (directionCareRtl) {
             window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         }
-        fragmentHost.listener(
-            onPageSettled = {
-                val previousCount = getFragmentCount()
-                if (fragmentHost.currentItem <= getFragmentCount() - 2 && getTopFragment()?.preventFromPop == true) {
-                    fragmentHost.setCurrentItem(getFragmentCount() - 1, true)
-                    getTopFragment()?.onBackPressed()
-                    return@listener
-                }
-                while (fragmentHost.currentItem <= getFragmentCount() - 2) {
-                    fragmentStack.removeLast()
-                }
-                if (previousCount >= fragmentHost.currentItem + 2) {
-                    whyGoogleFragmentAdapter.notifyItemRangeRemoved(
-                        fragmentHost.currentItem + 1,
-                        previousCount - fragmentHost.currentItem - 1
-                    )
-                    fragmentStack.lastOrNull()?.onFragmentVisible()
-                    fragmentStack.lastOrNull()?.onBackToFragment()
-                    onTopFragmentChanged(fragmentStack.last())
-                }
-                if (lastKnownFragment != fragmentStack.lastOrNull()) {
-                    fragmentStack.lastOrNull()?.onEnterAnimationEnded()
-                    lastKnownFragment = fragmentStack.lastOrNull()
-                }
-            },
-            onPageScrolled = {}
-        )
+            fragmentHost.listener(
+                onPageSettled = {
+                    val previousCount = getFragmentCount()
+                    if (fragmentHost.currentItem <= getFragmentCount() - 2 && getTopFragment()?.preventFromPop == true) {
+                        fragmentHost.setCurrentItem(getFragmentCount() - 1, true)
+                        getTopFragment()?.onBackPressed()
+                        return@listener
+                    }
+                    while (fragmentHost.currentItem <= getFragmentCount() - 2) {
+                        fragmentStack.removeLast()
+                    }
+                    if (previousCount >= fragmentHost.currentItem + 2) {
+                        whyGoogleFragmentAdapter.notifyItemRangeRemoved(
+                            fragmentHost.currentItem + 1,
+                            previousCount - fragmentHost.currentItem - 1
+                        )
+                        fragmentStack.lastOrNull()?.onFragmentVisible()
+                        fragmentStack.lastOrNull()?.onBackToFragment()
+                        onTopFragmentChanged(fragmentStack.last())
+                    }
+                    if (lastKnownFragment != fragmentStack.lastOrNull()) {
+                        fragmentStack.lastOrNull()?.onEnterAnimationEnded()
+                        lastKnownFragment = fragmentStack.lastOrNull()
+                    }
+                },
+                onPageScrolled = {}
+            )
     }
 
     fun accessViews(block: T.() -> Unit) {

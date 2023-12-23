@@ -13,14 +13,15 @@ import ir.ayantech.whygoogle.widget.SwipeBackContainer
 
 class MainActivity : SwipableWhyGoogleActivity<ActivityMainBinding>() {
 
-
     override val directionCareRtl: Boolean
         get() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        start(MainFragment(), onFragmentCreationEndedCallback = {
-            Log.d("WhG", "onFragmentCreationEndedCallback")
-        })
+        if (savedInstanceState == null)
+            start(MainFragment(), onFragmentCreationEndedCallback = {
+                Log.d("WhG", "onFragmentCreationEndedCallback")
+            })
     }
 
     override val binder: (LayoutInflater) -> ActivityMainBinding
