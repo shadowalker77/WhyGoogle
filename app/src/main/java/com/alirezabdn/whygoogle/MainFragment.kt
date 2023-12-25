@@ -24,7 +24,7 @@ class MainFragment : WhyGoogleFragment<MainFragmentBinding>() {
                 start(MainFragment())
             }
             val sec = SecondFragment().also {
-                it.name = "hi"
+                it.name = "hi there"
             }
             go2.setOnClickListener {
                 start(sec)

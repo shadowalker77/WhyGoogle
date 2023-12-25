@@ -2,41 +2,80 @@ package ir.ayantech.whygoogle.helper
 
 import android.os.Bundle
 import android.os.Parcelable
-import ir.ayantech.whygoogle.fragment.WhyGoogleFragment
-import java.io.Serializable
+import androidx.fragment.app.Fragment
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import java.io.Serializable
 
-class FragmentArgumentDelegate<T : Any?>(
+class FragmentArgumentDelegate<T : Any>(
+    private val defaultValue: T? = null,
     private val key: String? = null
-) : ReadWriteProperty<Any?, T> {
+) : ReadWriteProperty<Fragment, T> {
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        val arguments = (thisRef as? WhyGoogleFragment<*>)?.arguments
-        return arguments?.get(key ?: property.name) as? T
+    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
+        val finalKey = this.key ?: property.name
+        return thisRef.arguments?.get(finalKey) as? T
+            ?: defaultValue
             ?: throw IllegalStateException("Property ${property.name} not initialized")
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        val arguments = (thisRef as? WhyGoogleFragment<*>)?.arguments ?: Bundle()
+    override fun setValue(thisRef: Fragment, property: KProperty<*>, value: T) {
         val finalKey = this.key ?: property.name
-
-        when (value) {
-            is String -> arguments.putString(finalKey, value)
-            is Int -> arguments.putInt(finalKey, value)
-            is Long -> arguments.putLong(finalKey, value)
-            is Double -> arguments.putDouble(finalKey, value)
-            is Boolean -> arguments.putBoolean(finalKey, value)
-            is Float -> arguments.putFloat(finalKey, value)
-            is Char -> arguments.putChar(finalKey, value)
-            is Short -> arguments.putShort(finalKey, value)
-            is Byte -> arguments.putByte(finalKey, value)
-            is Serializable -> arguments.putSerializable(finalKey, value)
-            is Parcelable -> arguments.putParcelable(finalKey, value)
-        }
-
-        (thisRef as? WhyGoogleFragment<*>)?.arguments = arguments
+        val arguments = thisRef.arguments ?: Bundle()
+        arguments.putArgument(finalKey, value)
+        thisRef.arguments = arguments
     }
 }
 
-inline fun <reified T : Any?> fragmentArgument(key: String? = null) = FragmentArgumentDelegate<T>(key)
+class FragmentNullableArgumentDelegate<T : Any?>(
+    private val defaultValue: T?,
+    private val key: String? = null
+) : ReadWriteProperty<Fragment, T> {
+
+    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
+        val finalKey = this.key ?: property.name
+        return thisRef.arguments?.get(finalKey) as? T ?: defaultValue ?: getDefault(property)
+    }
+
+    override fun setValue(thisRef: Fragment, property: KProperty<*>, value: T) {
+        val finalKey = this.key ?: property.name
+        val arguments = thisRef.arguments ?: Bundle()
+        arguments.putArgument(finalKey, value)
+        thisRef.arguments = arguments
+    }
+
+    private fun getDefault(property: KProperty<*>): T {
+        if (property.returnType.isMarkedNullable) {
+            @Suppress("UNCHECKED_CAST")
+            return null as T
+        } else {
+            throw IllegalStateException("Property ${property.name} not initialized")
+        }
+    }
+}
+
+inline fun <reified T : Any> fragmentArgument(defaultValue: T? = null, key: String? = null) =
+    FragmentArgumentDelegate(defaultValue, key)
+
+inline fun <reified T : Any?> nullableFragmentArgument(
+    defaultValue: T? = null,
+    key: String? = null
+) = FragmentNullableArgumentDelegate(defaultValue, key)
+
+fun Bundle.putArgument(key: String?, value: Any?) {
+    when (value) {
+        null -> putSerializable(key, null)
+        is String -> putString(key, value)
+        is Int -> putInt(key, value)
+        is Long -> putLong(key, value)
+        is Double -> putDouble(key, value)
+        is Boolean -> putBoolean(key, value)
+        is Float -> putFloat(key, value)
+        is Char -> putChar(key, value)
+        is Short -> putShort(key, value)
+        is Byte -> putByte(key, value)
+        is Serializable -> putSerializable(key, value)
+        is Parcelable -> putParcelable(key, value)
+        else -> throw IllegalArgumentException("Unsupported argument type: ${value::class.java.simpleName}")
+    }
+}
